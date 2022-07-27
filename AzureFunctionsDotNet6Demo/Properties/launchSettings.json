@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "AzureFunctionsDotNet6Demo": {
+      "commandName": "Project",
+      "commandLineArgs": "--port 7202",
+      "launchBrowser": false
+    }
+  }
+}
