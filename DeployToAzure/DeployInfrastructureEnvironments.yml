@@ -29,15 +29,16 @@ name: $(date:yyyy).$(date:MM).$(date:dd)$(rev:.r)
 # --------------------------------------------------------------------------------
 stages:
 - stage: DeployDEVResources
+  environment: 'DEV'
   displayName: DEV Deploy Resources
   jobs:
   - template: DeployInfrastructureEnvironment.yml
     parameters:
       variableGroupName: 'FunctionDemo-Infra-Dev'
-      environmentUpper: 'DEV'
       runDateTime: 'Pipeline-$(Build.BuildNumber)'
 
 - stage: DeployQAResources
+  environment: 'QA'
   displayName: QA Deploy Resources
   dependsOn: DeployDEVResources
   condition: succeeded('DeployDEVResources')
@@ -45,5 +46,4 @@ stages:
   - template: DeployInfrastructureEnvironment.yml
     parameters:
       variableGroupName: 'FunctionDemo-Infra-QA'
-      environmentUpper: 'QA'
       runDateTime: 'Pipeline-$(Build.BuildNumber)'

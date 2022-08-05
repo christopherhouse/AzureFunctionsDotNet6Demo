@@ -3,14 +3,12 @@
 # --------------------------------------------------------------------------------
 parameters:
   variableGroupName: 'myVariableGroup'
-  environmentUpper: 'DEV'
   runDateTime: '12-31-2020 23:59:59'
 
 # --------------------------------------------------------------------------------
 jobs:
   - deployment: DeployEnvironment
     displayName: 'Initialize Deploy'
-    environment: $(environmentUpper)
   - job: Deploy_DEV
     displayName: Deploy Environment
     variables:
