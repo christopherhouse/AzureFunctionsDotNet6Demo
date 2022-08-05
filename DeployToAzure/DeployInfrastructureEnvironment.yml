@@ -21,24 +21,24 @@ parameters:
 # --------------------------------------------------------------------------------
 jobs:
   - deployment: DeployEnvironment
-    displayName: 'Initialize $(variables.environmentUpper) Deploy'
-    environment: $(variables.environmentUpper)
-  - job: Deploy_$(variables.environmentUpper)
-    displayName: Deploy $(variables.environmentUpper) Environment
+    displayName: 'Initialize ${variables.environmentUpper} Deploy'
+    environment: ${variables.environmentUpper}
+  - job: Deploy_${variables.environmentUpper}
+    displayName: Deploy ${variables.environmentUpper} Environment
     steps:
     - script: az bicep build --file DeployToAzure/main.bicep --outfile DeployToAzure/main.json
       displayName: 'Compile main Bicep file to ARM'
     - task: AzureResourceManagerTemplateDeployment@3
-      displayName: 'Deploy ARM to $(variables.environmentUpper)'
+      displayName: 'Deploy ARM to ${variables.environmentUpper}'
       inputs:
         deploymentScope: 'Resource Group'
-        azureResourceManagerConnection: '$(variables.subscriptionName)'
-        subscriptionId: '$(variables.subscriptionId)'
+        azureResourceManagerConnection: '${variables.subscriptionName}'
+        subscriptionId: '${variables.subscriptionId}'
         action: 'Create Or Update Resource Group'
-        resourceGroupName: '$(variables.resourceGroupName)'
-        location: '$(variables.location)'
+        resourceGroupName: '${variables.resourceGroupName}'
+        location: '${variables.location}'
         templateLocation: 'Linked artifact'
         csmFile: 'DeployToAzure/main.bicep'
-        overrideParameters: '-environmentCode $(variables.environmentCode) -location $(variables.location) -orgPrefix $(variables.orgPrefix) -appPrefix $(variables.appPrefix) -appSuffix $(variables.appSuffix) -storageSku $(variables.storageSku) -functionAppSku $(variables.functionAppSku) -functionAppSkuFamily $(variables.functionAppSkuFamily) -functionAppSkuTier $(variables.functionAppSkuTier) -runDateTime ${{parameters.runDateTime}}'
+        overrideParameters: '-environmentCode ${variables.environmentCode} -location ${variables.location} -orgPrefix ${variables.orgPrefix} -appPrefix ${variables.appPrefix} -appSuffix ${variables.appSuffix} -storageSku ${variables.storageSku} -functionAppSku ${variables.functionAppSku} -functionAppSkuFamily ${variables.functionAppSkuFamily} -functionAppSkuTier ${variables.functionAppSkuTier} -runDateTime ${parameters.runDateTime}'
         deploymentMode: 'Incremental'
         continueOnError: ignoreError
