@@ -24,7 +24,7 @@ var functionAppName = toLower('${orgPrefix}-${appPrefix}-func-${environmentCode}
 var functionAppSvcName = '${functionAppName}-appsvc'
 var functionInsightsName = '${functionAppName}-insights'
 
-var keyVaultName = '${orgPrefix}-${appPrefix}-keyvault-${environmentCode}'
+var keyVaultName = '${orgPrefix}${appPrefix}keyvault${environmentCode}'
 var cosmosConnectionStringReference = '@Microsoft.KeyVault(VaultName=${keyVaultName};SecretName=cosmosConnectionString)'
 var serviceBusReceiveConnectionStringReference = '@Microsoft.KeyVault(VaultName=${keyVaultName};SecretName=serviceBusReceiveConnectionString)'
 var serviceBusSendConnectionStringReference = '@Microsoft.KeyVault(VaultName=${keyVaultName};SecretName=serviceBusSendConnectionString)'
