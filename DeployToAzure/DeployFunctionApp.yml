@@ -73,7 +73,7 @@ stages:
             displayName: 'Azure functions app deploy'
             inputs:
               azureSubscription: '$(subscriptionNameDev)'
-              appType: functionApp
+              appType: functionAppLinux
               appName: $(functionAppNameDev)
               package: $(Pipeline.Workspace)/Code/*.zip
 
@@ -96,6 +96,6 @@ stages:
             displayName: 'Azure functions app deploy'
             inputs:
               azureSubscription: '$(subscriptionNameQA)'
-              appType: functionApp
+              appType: functionAppLinux
               appName: $(functionAppNameQA)
               package: $(Pipeline.Workspace)/Code/*.zip
