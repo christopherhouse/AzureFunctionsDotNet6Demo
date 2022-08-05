@@ -84,7 +84,7 @@ module cosmosModule 'cosmos.bicep' = {
 }
 module keyVaultModule 'keyvault.bicep' = {
   name: 'keyvault${deploymentSuffix}'
-  dependsOn: [storageModule, serviceBusModule, functionModule, cosmosModule]
+  dependsOn: [storageModule, servicebusModule, functionModule, cosmosModule]
   params: {
     templateFileName: '~keyvault.bicep'
     orgPrefix: orgPrefix
