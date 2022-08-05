@@ -21,10 +21,10 @@ parameters:
 # --------------------------------------------------------------------------------
 jobs:
   - deployment: DeployEnvironment
-    displayName: 'Initialize $(environmentUpper) Deploy'
-    environment: $(environmentUpper)
-  - job: Deploy_$(environmentUpper)
-    displayName: Deploy $(environmentUpper) Environment
+    displayName: 'Initialize Deploy'
+    environment: DEV
+  - job: Deploy_DEV
+    displayName: Deploy Environment
     variables:
       - group: ${{ parameters.variableGroupName }}
     steps:
