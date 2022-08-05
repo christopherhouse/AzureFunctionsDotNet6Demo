@@ -16,6 +16,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AzureDeploy", "AzureDeploy"
 		DeployToAzure\main.bicep = DeployToAzure\main.bicep
 		DeployToAzure\servicebus.bicep = DeployToAzure\servicebus.bicep
 		DeployToAzure\storage.bicep = DeployToAzure\storage.bicep
+		DeployToAzure\StartStopServices.ps1 = DeployToAzure\StartStopServices.ps1 
 	EndProjectSection
 EndProject
 Global
