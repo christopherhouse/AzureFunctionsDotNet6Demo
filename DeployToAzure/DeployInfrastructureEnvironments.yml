@@ -20,6 +20,8 @@ stages:
   variables:
   - group: 'FunctionDemoDevVariables'
   jobs:
+  - script: echo Deploy to Environment $(Name) and resource group $(resourceGroupName)
+    displayName: 'Display variable from variable group'
   - template: DeployInfrastructureEnvironment.yml
     parameters:
       environmentCode: $(environmentCode)
