@@ -54,7 +54,7 @@ stages:
 
 # ------------------------------------------------------------------------------------------------------------------------
 - stage: DeployDEV
-  displayName: Dev Deploy stage
+  displayName: Dev Deploy Stage
   dependsOn: BuildProgram
   condition: succeeded()
 

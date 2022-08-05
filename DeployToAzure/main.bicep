@@ -40,8 +40,7 @@ module storageModule 'storage.bicep' = {
 module servicebusModule 'servicebus.bicep' = {
   name: 'servicebus${deploymentSuffix}'
   params: {
-    queue1Name: 'orders-received'
-    queue2Name: 'orders-to-erp'
+    queueNames: ['orders-received','orders-to-erp']
 
     templateFileName: '~servicebus.bicep'
     orgPrefix: orgPrefix

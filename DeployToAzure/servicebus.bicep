@@ -12,8 +12,7 @@ param location string = resourceGroup().location
 param runDateTime string = utcNow()
 param templateFileName string = '~svcbus.bicep'
 
-param queue1Name string = 'orders-received'
-param queue2Name string = 'orders-to-erp'
+param queueNames array = ['orders-received', 'orders-to-erp']
 
 // --------------------------------------------------------------------------------
 var serviceBusName = '${orgPrefix}-${appPrefix}-svcbus-${environmentCode}-${appSuffix}'
@@ -50,9 +49,9 @@ resource svcBusRootManageSharedAccessKeyResource 'Microsoft.ServiceBus/namespace
   }
 }
 
-resource svcBusQueue1Resource 'Microsoft.ServiceBus/namespaces/queues@2022-01-01-preview' = {
+resource svcBusQueueResource 'Microsoft.ServiceBus/namespaces/queues@2022-01-01-preview' = [for queueName in queueNames: {
   parent: svcBusResource
-  name: queue1Name
+  name: queueName
   properties: {
     maxMessageSizeInKilobytes: 256
     lockDuration: 'PT30S'
@@ -68,24 +67,4 @@ resource svcBusQueue1Resource 'Microsoft.ServiceBus/namespaces/queues@2022-01-01
     enablePartitioning: false
     enableExpress: false
   }
-}
-
-resource svcBusQueue2Resource 'Microsoft.ServiceBus/namespaces/queues@2022-01-01-preview' = {
-  parent: svcBusResource
-  name: queue2Name
-  properties: {
-    maxMessageSizeInKilobytes: 256
-    lockDuration: 'PT30S'
-    maxSizeInMegabytes: 1024
-    requiresDuplicateDetection: false
-    requiresSession: false
-    defaultMessageTimeToLive: 'P14D'
-    deadLetteringOnMessageExpiration: false
-    enableBatchedOperations: true
-    duplicateDetectionHistoryTimeWindow: 'PT10M'
-    maxDeliveryCount: 10
-    status: 'Active'
-    enablePartitioning: false
-    enableExpress: false
-  }
-}
+}]
