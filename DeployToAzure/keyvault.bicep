@@ -1,5 +1,6 @@
 // --------------------------------------------------------------------------------
 // This BICEP file will create a KeyVault for the Azure Function Example Project
+// TODO: Split out access policies and secrets into separate files
 // --------------------------------------------------------------------------------
 param orgPrefix string = 'org'
 param appPrefix string = 'app'
@@ -10,28 +11,23 @@ param location string = resourceGroup().location
 param runDateTime string = utcNow()
 param templateFileName string = '~keyvault.bicep'
 
-// --------------------------------------------------------------------------------
-var keyVaultName = '${orgPrefix}${appPrefix}keyvault${environmentCode}${appSuffix}'
+param functionStorageAccountName string
+param serviceBusName string
+param cosmosAccountName string
+param functionAppPrincipalId string 
+param functionInsightsKey string
 
 // --------------------------------------------------------------------------------
-var functionAppName = toLower('${orgPrefix}-${appPrefix}-func-${environmentCode}-${appSuffix}')
-resource functionApp 'Microsoft.Web/sites@2021-03-01' existing = { name: functionAppName }
-var functionAppId = functionApp.identity.principalId
+var keyVaultName = '${orgPrefix}-${appPrefix}-keyvault-${environmentCode}${appSuffix}'
 
-var functionInsightsName = '${functionAppName}-insights'
-resource functionInsightsResource 'Microsoft.Insights/components@2020-02-02' existing = { name: functionInsightsName }
-var functionInsightsKey = functionInsightsResource.properties.InstrumentationKey
-
-var functionStorageAccountName = toLower('${orgPrefix}${appPrefix}func${environmentCode}${appSuffix}store')
+// --------------------------------------------------------------------------------
 resource functionStorageAccountResource 'Microsoft.Storage/storageAccounts@2021-04-01' existing = { name: functionStorageAccountName }
 var functionStorageAccountConnectionString = 'DefaultEndpointsProtocol=https;AccountName=${functionStorageAccountResource.name};EndpointSuffix=${environment().suffixes.storage};AccountKey=${listKeys(functionStorageAccountResource.id, functionStorageAccountResource.apiVersion).keys[0].value}'
 
-var cosmosAccountName = '${orgPrefix}-${appPrefix}-cosmos-acct${environmentCode}-${appSuffix}'
 resource cosmosResource 'Microsoft.DocumentDB/databaseAccounts@2022-02-15-preview' existing = { name: cosmosAccountName }
 var cosmosKey = '${listKeys(cosmosResource.id, cosmosResource.apiVersion).primaryMasterKey}'
 var cosmosConnectionString = 'AccountEndpoint=https://${cosmosAccountName}.documents.azure.com:443/;AccountKey=${cosmosKey}'
 
-var serviceBusName = '${orgPrefix}-${appPrefix}-svcbus-${environmentCode}-${appSuffix}'
 resource serviceBusResource 'Microsoft.ServiceBus/namespaces@2021-11-01' existing = { name: serviceBusName }
 var serviceBusEndpoint = '${serviceBusResource.id}/AuthorizationRules/RootManageSharedAccessKey' 
 var serviceBusSendConnectionString = 'Endpoint=sb://${serviceBusResource.name}.servicebus.windows.net/;SharedAccessKeyName=send;SharedAccessKey=${listKeys(serviceBusEndpoint, serviceBusResource.apiVersion).primaryKey}' 
@@ -44,13 +40,6 @@ var owner2UserObjectId = '209019b5-167b-45cd-ab9c-f987fa262040' // Chris's AD Gu
 resource keyvaultResource 'Microsoft.KeyVault/vaults@2021-11-01-preview' = {
   name: keyVaultName
   location: location
-  dependsOn: [
-    functionApp
-    functionInsightsResource
-    functionStorageAccountResource
-    cosmosResource
-    serviceBusResource
-  ]
   tags: {
     LastDeployed: runDateTime
     TemplateFile: templateFileName
@@ -62,8 +51,6 @@ resource keyvaultResource 'Microsoft.KeyVault/vaults@2021-11-01-preview' = {
     }
     tenantId: subscription().tenantId
 
-    // Use Access Policies model
-    enableRbacAuthorization: false      
     // add function app and web app identities in the access policies so they can read the secrets
     accessPolicies: [
       {
@@ -85,8 +72,8 @@ resource keyvaultResource 'Microsoft.KeyVault/vaults@2021-11-01-preview' = {
         } 
       }
       {
-        objectId:  functionAppId
         tenantId: subscription().tenantId
+        objectId:  functionAppPrincipalId
         permissions: {
           secrets: [ 'get' ]
           certificates: [ 'get' ]
@@ -94,11 +81,17 @@ resource keyvaultResource 'Microsoft.KeyVault/vaults@2021-11-01-preview' = {
         }
       }
     ]
-    enabledForDeployment: true          // VMs can retrieve certificates
-    enabledForTemplateDeployment: true  // ARM can retrieve values
+    enabledForDeployment: false          // VMs can retrieve certificates
+    enabledForTemplateDeployment: false  // ARM can retrieve values
     enablePurgeProtection: true         // Not allowing to purge key vault or its objects after deletion
-    enableSoftDelete: false
+    enableSoftDelete: true
+    softDeleteRetentionInDays: 7
+    enableRbacAuthorization: false      // Use Access Policies model
     createMode: 'default'               // Creating or updating the key vault (not recovering)
+    networkAcls: {
+      bypass: 'AzureServices'
+      defaultAction: 'deny'
+    }
   }
 
   resource functionInsightsSecret 'secrets' = {
@@ -132,3 +125,5 @@ resource keyvaultResource 'Microsoft.KeyVault/vaults@2021-11-01-preview' = {
     }
   }
 }
+
+output keyVaultName string = keyVaultName

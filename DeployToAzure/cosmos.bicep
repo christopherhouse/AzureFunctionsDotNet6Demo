@@ -1,5 +1,6 @@
 ﻿// --------------------------------------------------------------------------------
 // This BICEP file will create a Cosmos Database for the Azure Function Example Project
+// TODO: Change this to use array of containers...
 // --------------------------------------------------------------------------------
 param orgPrefix string = 'org'
 param appPrefix string = 'app'
@@ -16,8 +17,8 @@ param ordersContainerName string = 'orders'
 param ordersPartitionKey string = '/customerNumber'
 
 // --------------------------------------------------------------------------------
-var cosmosAccountName = '${orgPrefix}-${appPrefix}-cosmos-acct${environmentCode}-${appSuffix}'
-var cosmosDatabaseName = '${orgPrefix}-${appPrefix}-cosmos-db${environmentCode}-${appSuffix}'
+var cosmosAccountName = '${orgPrefix}-${appPrefix}-cosmos-acct${environmentCode}${appSuffix}'
+var cosmosDatabaseName = '${orgPrefix}-${appPrefix}-cosmos-db${environmentCode}${appSuffix}'
 
 // --------------------------------------------------------------------------------
 resource cosmosAccountResource 'Microsoft.DocumentDB/databaseAccounts@2022-05-15' = {
@@ -153,3 +154,5 @@ resource ordersContainerResource 'Microsoft.DocumentDB/databaseAccounts/sqlDatab
         }
     }
 }
+
+output cosmosAccountName string = cosmosAccountName

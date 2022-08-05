@@ -67,3 +67,5 @@ resource blobServiceResource 'Microsoft.Storage/storageAccounts/blobServices@201
         }
     }
 }
+
+output functionStorageAccountName string = storageAccountResource.name

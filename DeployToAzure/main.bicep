@@ -1,18 +1,17 @@
 // --------------------------------------------------------------------------------
 // Main file that deploys all Azure Resources for one environment
 // --------------------------------------------------------------------------------
-// TODO: put the queue names into an array and create them from that
-// --------------------------------------------------------------------------------
 // To deploy this Bicep manually:
 // 	 az login
 //   az account set --subscription d1ced742-2c89-420b-a12a-6d9dc6d48c43
-//   az deployment group create --resource-group rg_functionexample --template-file 'main.bicep' --parameters orgPrefix=lll appPrefix=funcdemo  
+//   az deployment group create -n main-deploy-20220805T140000Z --resource-group rg_functiondemo_dev --template-file 'main.bicep' --parameters environmentCode=dev orgPrefix=lll appPrefix=funcdemo  
+//   az deployment group create -n main-deploy-20220805T140000Z --resource-group rg_functiondemo_qa --template-file 'main.bicep' --parameters environmentCode=qa orgPrefix=lll appPrefix=funcdemo  
 // --------------------------------------------------------------------------------
 param environmentCode string ='dev'
 param location string = resourceGroup().location
 param orgPrefix string = 'org'
 param appPrefix string = 'app'
-param appSuffix string = '1'
+param appSuffix string = ''  // '-1' 
 param storageSku string = 'Standard_LRS'
 param functionAppSku string = 'Y1'
 param functionAppSkuFamily string = 'Y'
@@ -58,7 +57,8 @@ module functionModule 'function.bicep' = {
     functionAppSku: functionAppSku
     functionAppSkuFamily: functionAppSkuFamily
     functionAppSkuTier: functionAppSkuTier
-    
+    functionStorageAccountName: storageModule.outputs.functionStorageAccountName
+
     templateFileName: '~function.bicep'
     orgPrefix: orgPrefix
     appPrefix: appPrefix
@@ -85,6 +85,12 @@ module keyVaultModule 'keyvault.bicep' = {
   name: 'keyvault${deploymentSuffix}'
   dependsOn: [storageModule, servicebusModule, functionModule, cosmosModule]
   params: {
+    functionAppPrincipalId: functionModule.outputs.functionAppPrincipalId
+    functionInsightsKey: functionModule.outputs.functionInsightsKey
+    functionStorageAccountName: functionModule.outputs.functionStorageAccountName
+    serviceBusName: servicebusModule.outputs.serviceBusName
+    cosmosAccountName: cosmosModule.outputs.cosmosAccountName
+
     templateFileName: '~keyvault.bicep'
     orgPrefix: orgPrefix
     appPrefix: appPrefix

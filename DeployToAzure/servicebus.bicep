@@ -15,7 +15,7 @@ param templateFileName string = '~svcbus.bicep'
 param queueNames array = ['orders-received', 'orders-to-erp']
 
 // --------------------------------------------------------------------------------
-var serviceBusName = '${orgPrefix}-${appPrefix}-svcbus-${environmentCode}-${appSuffix}'
+var serviceBusName = '${orgPrefix}-${appPrefix}-svcbus-${environmentCode}${appSuffix}'
 
 // --------------------------------------------------------------------------------
 resource svcBusResource 'Microsoft.ServiceBus/namespaces@2022-01-01-preview' = {
@@ -68,3 +68,8 @@ resource svcBusQueueResource 'Microsoft.ServiceBus/namespaces/queues@2022-01-01-
     enableExpress: false
   }
 }]
+
+output serviceBusName string = serviceBusName
+var serviceBusEndpoint = '${svcBusResource.id}/AuthorizationRules/RootManageSharedAccessKey' 
+output serviceBusEndpoint string = serviceBusEndpoint
+

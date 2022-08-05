@@ -17,21 +17,21 @@ param productsContainerName string = 'products'
 param ordersContainerName string = 'orders'
 param orderReceivedQueue string = 'orders-received'
 param ordersToErpQueue string = 'orders-to-erp'
+param functionStorageAccountName string
 
 // --------------------------------------------------------------------------------
-var functionAppName = toLower('${orgPrefix}-${appPrefix}-func-${environmentCode}-${appSuffix}')
-var functionStorageAccountName = toLower('${orgPrefix}${appPrefix}func${environmentCode}${appSuffix}store')
+var functionAppName = toLower('${orgPrefix}-${appPrefix}-func-${environmentCode}${appSuffix}')
 var functionAppSvcName = '${functionAppName}-appsvc'
 var functionInsightsName = '${functionAppName}-insights'
 
-var keyVaultName = '${orgPrefix}${appPrefix}keyvault${environmentCode}${appSuffix}'
+var keyVaultName = '${orgPrefix}-${appPrefix}-keyvault-${environmentCode}${appSuffix}'
 var cosmosConnectionStringReference = '@Microsoft.KeyVault(VaultName=${keyVaultName};SecretName=cosmosConnectionString)'
 var serviceBusReceiveConnectionStringReference = '@Microsoft.KeyVault(VaultName=${keyVaultName};SecretName=serviceBusReceiveConnectionString)'
 var serviceBusSendConnectionStringReference = '@Microsoft.KeyVault(VaultName=${keyVaultName};SecretName=serviceBusSendConnectionString)'
 
-
 // --------------------------------------------------------------------------------
 resource storageAccountResource 'Microsoft.Storage/storageAccounts@2019-06-01' existing = { name: functionStorageAccountName }
+var functionStorageAccountConnectionString = 'DefaultEndpointsProtocol=https;AccountName=${storageAccountResource.name};EndpointSuffix=${environment().suffixes.storage};AccountKey=${listKeys(storageAccountResource.id, storageAccountResource.apiVersion).keys[0].value}'
 
 resource appInsightsResource 'Microsoft.Insights/components@2020-02-02-preview' = {
     name: functionInsightsName
@@ -111,11 +111,11 @@ resource functionAppResource 'Microsoft.Web/sites@2018-11-01' = {
             appSettings: [
                 {
                     name: 'AzureWebJobsStorage'
-                    value: 'DefaultEndpointsProtocol=https;AccountName=${storageAccountResource.name};EndpointSuffix=${environment().suffixes.storage};AccountKey=${listKeys(storageAccountResource.id, '2019-06-01').keys[0].value}'
+                    value: functionStorageAccountConnectionString
                 }
                 {
                     name: 'WEBSITE_CONTENTAZUREFILECONNECTIONSTRING'
-                    value: 'DefaultEndpointsProtocol=https;AccountName=${storageAccountResource.name};EndpointSuffix=${environment().suffixes.storage};AccountKey=${listKeys(storageAccountResource.id, '2019-06-01').keys[0].value}'
+                    value: functionStorageAccountConnectionString
                 }
                 {
                     name: 'WEBSITE_CONTENTSHARE'
@@ -266,3 +266,9 @@ resource functionAppBinding 'Microsoft.Web/sites/hostNameBindings@2018-11-01' = 
         hostNameType: 'Verified'
     }
 }
+
+output functionAppPrincipalId string = functionAppResource.identity.principalId
+output functionAppName string = functionAppName
+output functionInsightsName string = functionInsightsName
+output functionInsightsKey string = appInsightsResource.properties.InstrumentationKey
+output functionStorageAccountName string = functionStorageAccountName
