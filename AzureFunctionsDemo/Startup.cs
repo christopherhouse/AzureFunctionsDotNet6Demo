@@ -1,5 +1,6 @@
 ﻿[assembly: FunctionsStartup(typeof(Startup))]
 namespace AzureFunctionsDotNet6Demo;
+
 public class Startup : FunctionsStartup
 {
     public override void Configure(IFunctionsHostBuilder builder)
