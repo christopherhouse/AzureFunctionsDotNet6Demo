@@ -20,7 +20,7 @@ stages:
   variables:
   - group: 'FunctionDemoDevVariables'
   jobs:
-  - template: ado_deploy_environment.yml
+  - template: DeployInfrastructureEnvironment.yml
     parameters:
       environmentCode: $(environmentCode)
       environmentUpper: $(environmentUpper)
@@ -59,7 +59,7 @@ stages:
   variables:
   - group: 'FunctionDemoQAVariables'
   jobs:
-  - template: ado_deploy_environment.yml
+  - template: DeployInfrastructureEnvironment.yml
     parameters:
       environmentCode: $(environmentCode)
       environmentUpper: $(environmentUpper)
