@@ -8,7 +8,7 @@ parameters:
 
   environmentCode: 'dev'
   environmentUpper: 'DEV'
-  regionName: 'eastus'
+  location: 'eastus'
   orgPrefix: 'org'
   appPrefix: 'app'
   appSuffix: '1'
@@ -36,9 +36,9 @@ jobs:
         subscriptionId: '${{parameters.subscriptionId}}'
         action: 'Create Or Update Resource Group'
         resourceGroupName: '${{parameters.resourceGroupName}}'
-        location: '${{parameters.regionName}}'
+        location: '${{parameters.location}}'
         templateLocation: 'Linked artifact'
         csmFile: 'DeployToAzure/main.bicep'
-        overrideParameters: '-environmentCode ${{parameters.environmentCode}} -regionName ${{parameters.regionName}} -orgPrefix ${{parameters.orgPrefix}} -appPrefix ${{parameters.appPrefix}} -appSuffix ${{parameters.appSuffix}} -storageSku ${{parameters.storageSku}} -functionAppSku ${{parameters.functionAppSku}} -functionAppSkuFamily ${{parameters.functionAppSkuFamily}} -functionAppSkuTier ${{parameters.functionAppSkuTier}} -runDateTime ${{parameters.runDateTime}}'
+        overrideParameters: '-environmentCode ${{parameters.environmentCode}} -location ${{parameters.location}} -orgPrefix ${{parameters.orgPrefix}} -appPrefix ${{parameters.appPrefix}} -appSuffix ${{parameters.appSuffix}} -storageSku ${{parameters.storageSku}} -functionAppSku ${{parameters.functionAppSku}} -functionAppSkuFamily ${{parameters.functionAppSkuFamily}} -functionAppSkuTier ${{parameters.functionAppSkuTier}} -runDateTime ${{parameters.runDateTime}}'
         deploymentMode: 'Incremental'
         continueOnError: ignoreError
