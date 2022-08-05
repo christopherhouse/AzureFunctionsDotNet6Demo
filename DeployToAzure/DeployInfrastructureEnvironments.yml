@@ -33,7 +33,7 @@ stages:
   jobs:
   - template: DeployInfrastructureEnvironment.yml
     parameters:
-      variableGroupName: 'FunctionDemoDevVariables'
+      variableGroupName: 'FunctionDemo-Infra-Dev'
       environmentUpper: 'DEV'
       runDateTime: 'Pipeline-$(Build.BuildNumber)'
 
@@ -44,6 +44,6 @@ stages:
   jobs:
   - template: DeployInfrastructureEnvironment.yml
     parameters:
-      variableGroupName: 'FunctionDemoQAVariables'
+      variableGroupName: 'FunctionDemo-Infra-QA'
       environmentUpper: 'QA'
       runDateTime: 'Pipeline-$(Build.BuildNumber)'

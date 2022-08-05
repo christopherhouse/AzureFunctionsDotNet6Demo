@@ -19,8 +19,9 @@ pool:
 name: $(date:yyyy).$(date:MM).$(date:dd)$(rev:.r)
 
 variables:
-  - group: 'FunctionDemoFunDeployVariables'
+  - group: 'FunctionDemo-Deploy-FunctionApp'
 
+# ------------------------------------------------------------------------------------------------------------------------
 stages:
 - stage: BuildProgram
   displayName: Build Program
