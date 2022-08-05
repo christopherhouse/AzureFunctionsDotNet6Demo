@@ -24,7 +24,8 @@ stages:
   #  displayName: 'Display variable from variable group'
   - template: DeployInfrastructureEnvironment.yml
     parameters:
-      GroupVariablesName: 'FunctionDemoDevVariables'
+      variableGroupName: 'FunctionDemoDevVariables'
+      environmentUpper: 'DEV'
       runDateTime: 'Pipeline-$(Build.BuildNumber)'
     #parameters:
     #  environmentCode: $(environmentCode)
@@ -66,7 +67,8 @@ stages:
   jobs:
   - template: DeployInfrastructureEnvironment.yml
     parameters:
-      GroupVariablesName: 'FunctionDemoQAVariables'
+      variableGroupName: 'FunctionDemoQAVariables'
+      environmentUpper: 'QA'
       runDateTime: 'Pipeline-$(Build.BuildNumber)'
     #parameters:
     #  environmentCode: $(environmentCode)

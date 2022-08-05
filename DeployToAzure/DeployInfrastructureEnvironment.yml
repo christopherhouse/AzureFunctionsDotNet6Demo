@@ -2,43 +2,45 @@
 # Pipeline to deploy all Azure Resources for one environment for the Azure Function Example Project
 # --------------------------------------------------------------------------------
 parameters:
-  subscriptionName: 'My Subscription Name (mySubscriptionId)'
-  subscriptionId: 'mySubscriptionId'
-  resourceGroupName: 'rg_myResourceGroup'
-
-  environmentCode: 'dev'
+  variableGroupName: 'myVariableGroup'
+  #subscriptionName: 'My Subscription Name (mySubscriptionId)'
+  #subscriptionId: 'mySubscriptionId'
+  #resourceGroupName: 'rg_myResourceGroup'
+  #environmentCode: 'dev'
   environmentUpper: 'DEV'
-  location: 'eastus'
-  orgPrefix: 'org'
-  appPrefix: 'app'
-  appSuffix: '1'
-  storageSku: 'Standard_LRS'
-  functionAppSku: 'Y1'
-  functionAppSkuFamily: 'Y'
-  functionAppSkuTier: 'Dynamic'
+  #location: 'eastus'
+  #orgPrefix: 'org'
+  #appPrefix: 'app'
+  #appSuffix: '1'
+  #storageSku: 'Standard_LRS'
+  #functionAppSku: 'Y1'
+  #functionAppSkuFamily: 'Y'
+  #functionAppSkuTier: 'Dynamic'
   runDateTime: '12-31-2020 23:59:59'
 
 # --------------------------------------------------------------------------------
 jobs:
   - deployment: DeployEnvironment
-    displayName: 'Initialize ${variables.environmentUpper} Deploy'
-    environment: ${variables.environmentUpper}
-  - job: Deploy_${variables.environmentUpper}
-    displayName: Deploy ${variables.environmentUpper} Environment
+    displayName: 'Initialize $(environmentUpper) Deploy'
+    environment: $(environmentUpper)
+  - job: Deploy_$(environmentUpper)
+    displayName: Deploy $(environmentUpper) Environment
+    variables:
+      - group: ${{ parameters.variableGroupName }}
     steps:
     - script: az bicep build --file DeployToAzure/main.bicep --outfile DeployToAzure/main.json
       displayName: 'Compile main Bicep file to ARM'
     - task: AzureResourceManagerTemplateDeployment@3
-      displayName: 'Deploy ARM to ${variables.environmentUpper}'
+      displayName: 'Deploy ARM to $(environmentUpper)'
       inputs:
         deploymentScope: 'Resource Group'
-        azureResourceManagerConnection: '${variables.subscriptionName}'
-        subscriptionId: '${variables.subscriptionId}'
+        azureResourceManagerConnection: '$(subscriptionName)'
+        subscriptionId: '$(subscriptionId)'
         action: 'Create Or Update Resource Group'
-        resourceGroupName: '${variables.resourceGroupName}'
-        location: '${variables.location}'
+        resourceGroupName: '$(resourceGroupName)'
+        location: '$(location)'
         templateLocation: 'Linked artifact'
         csmFile: 'DeployToAzure/main.bicep'
-        overrideParameters: '-environmentCode ${variables.environmentCode} -location ${variables.location} -orgPrefix ${variables.orgPrefix} -appPrefix ${variables.appPrefix} -appSuffix ${variables.appSuffix} -storageSku ${variables.storageSku} -functionAppSku ${variables.functionAppSku} -functionAppSkuFamily ${variables.functionAppSkuFamily} -functionAppSkuTier ${variables.functionAppSkuTier} -runDateTime ${parameters.runDateTime}'
+        overrideParameters: '-environmentCode $(environmentCode) -location $(location) -orgPrefix $(orgPrefix) -appPrefix $(appPrefix) -appSuffix $(appSuffix) -storageSku $(storageSku) -functionAppSku $(functionAppSku) -functionAppSkuFamily $(functionAppSkuFamily) -functionAppSkuTier $(functionAppSkuTier) -runDateTime ${{parameters.runDateTime}}'
         deploymentMode: 'Incremental'
         continueOnError: ignoreError
