@@ -1,52 +1,43 @@
-﻿# --------------------------------------------------------------------------------
-# Pipeline to deploy Azure Function binaries for the Azure Function Example Project
-# --------------------------------------------------------------------------------
-# TODO: update this file
-# TODO: create variable group and use those values
-# --------------------------------------------------------------------------------
+﻿# ------------------------------------------------------------------------------------------------------------------------
+# Build for IoT Function App Processor for the Azure Function Example Project
+# ------------------------------------------------------------------------------------------------------------------------
+# Create a variable group for each environment with these variables:
+#   environmentCode: 'dev/qa/prod'
+#   environmentUpper: 'DEV/QA/PROD'
+#   resourceGroupName: 'rg_resourceGroupName'
+# ------------------------------------------------------------------------------------------------------------------------
 
 trigger: none # fire this manually for now
-# trigger:
-# - main
 # trigger:
 #   branches:
 #     include:
 #     - master
 
+pool:
+  vmImage: 'windows-latest'
+
+name: $(date:yyyy).$(date:MM).$(date:dd)$(rev:.r)
+
 variables:
-  buildConfiguration: 'Release'
-  skipComponentGovernanceDetection: true
-  pool: 'ubuntu-latest'
-  location: 'eastus'
-  resourceGroup: 'COSMOS-DEMO'
-  azure-sub: 'AIRS'
-  cosmosAccountName: 'cmh-cosmos-demo-acct'
-  cosmosDatabaseName: 'cmh-cosmos-demo-db'
-  cosmosContainerName: 'products'
-  cosmosContainerPartitionKey: '/category'
-  ordersContainerName: 'orders'
-  ordersPartitionKey: '/customerNumber'
-  functionAppName: 'cmh-cosmos-demo'
-  infrastructure-arm-template: '$(Pipeline.Workspace)/Infrastructure/cosmosfunctionsdemo.json'
+  - group: 'FunctionDemoFunDeployVariables'
 
 stages:
-- stage: Build
-  displayName: Build stage
+- stage: BuildProgram
+  displayName: Build Program
   jobs:
-  - job: BuildInfrastructure
-    displayName: Build Infrastructure
-    pool:
-      vmImage: 'ubuntu-latest'
+  - job: Build
+    displayName: Build
+
     steps:
     - task: DotNetCoreCLI@2
-      displayName: 'Build'
+      displayName: 'dotnet build'
       inputs:
         command: build
         projects: '**/*.csproj'
         arguments: '-- configuration Release'
 
     - task: DotNetCoreCLI@2
-      displayName: 'Publish'
+      displayName: 'dotnet publish'
       inputs:
         command: publish
         publishWebProjects: false
@@ -55,31 +46,54 @@ stages:
         arguments: '--configuration Release --output $(Build.ArtifactStagingDirectory)/code/'
 
     - task: PublishBuildArtifacts@1
-      displayName: 'Publish code artifact'
+      displayName: 'Save artifacts'
       inputs:
         PathtoPublish: '$(Build.ArtifactStagingDirectory)/code/'
         ArtifactName: 'Code'
         publishLocation: Container                        
 
-- stage: 'Deploy'
-  displayName: 'Deploy Stage'
-  variables:
-  - group: 'Cosmos Demo Variables'
+# ------------------------------------------------------------------------------------------------------------------------
+- stage: DeployDEV
+  displayName: Dev Deploy stage
+  dependsOn: BuildProgram
+  condition: succeeded()
+
   jobs:
-  - deployment: 'Deploy'
-    environment: 'Development'
-    pool:
-      vmImage: $(pool)
+  - deployment: DeployDev
+    displayName: Deploy DEV
+    environment: 'DEV'
+
     strategy:
-     runOnce:
-       deploy:
-        steps:
+      runOnce:
+        deploy:
+          steps:
           - task: AzureFunctionApp@1
-            displayName: 'Deploy functions'
+            displayName: 'Azure functions app deploy'
             inputs:
-              azureSubscription: 'AIRS'
-              appType: functionAppLinux
-              appName: $(functionAppName)
-              package: $(Pipeline.Workspace)/Code/*.zip
-              appSettings: '-cosmosDatabaseName $(cosmosDatabaseName) -cosmosContainerName $(cosmosContainerName) -cosmosConnectionstring $(cosmosConnectionString)'
-              
+              azureSubscription: '$(subscriptionId)'
+              appType: functionApp
+              appName: $(functionAppNameDev)
+              package: '$(Pipeline.Workspace)/drop/$(Build.BuildId).zip'
+
+# ------------------------------------------------------------------------------------------------------------------------
+- stage: DeployQA
+  displayName: QA Deploy Stage
+  dependsOn: DeployDev
+  condition: succeeded()
+
+  jobs:
+  - deployment: DeployQA
+    displayName: Deploy QA
+    environment: 'QA'
+
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - task: AzureFunctionApp@1
+            displayName: 'Azure functions app deploy'
+            inputs:
+              azureSubscription: '$(subscriptionId)'
+              appType: functionApp
+              appName: $(functionAppNameQA)
+              package: '$(Pipeline.Workspace)/drop/$(Build.BuildId).zip'
