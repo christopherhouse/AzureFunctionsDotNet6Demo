@@ -37,13 +37,13 @@ module storageModule 'storage.bicep' = {
     runDateTime:runDateTime
   }
 }
-module serviceBusModule 'serviceBus.bicep' = {
-  name: 'serviceBus${deploymentSuffix}'
+module servicebusModule 'servicebus.bicep' = {
+  name: 'servicebus${deploymentSuffix}'
   params: {
     queue1Name: 'orders-received'
     queue2Name: 'orders-to-erp'
 
-    templateFileName: '~serviceBus.bicep'
+    templateFileName: '~servicebus.bicep'
     orgPrefix: orgPrefix
     appPrefix: appPrefix
     environmentCode: environmentCode
@@ -82,11 +82,11 @@ module cosmosModule 'cosmos.bicep' = {
     runDateTime:runDateTime
   }
 }
-module keyVaultModule 'keyVault.bicep' = {
-  name: 'keyVault${deploymentSuffix}'
+module keyVaultModule 'keyvault.bicep' = {
+  name: 'keyvault${deploymentSuffix}'
   dependsOn: [storageModule, serviceBusModule, functionModule, cosmosModule]
   params: {
-    templateFileName: '~keyVault.bicep'
+    templateFileName: '~keyvault.bicep'
     orgPrefix: orgPrefix
     appPrefix: appPrefix
     environmentCode: environmentCode
