@@ -1,8 +1,6 @@
 ﻿// --------------------------------------------------------------------------------
 // This BICEP file will create a Service Bus for the Azure Function Example Project
 // --------------------------------------------------------------------------------
-// TODO: put the queue names into an array and create them from that
-// --------------------------------------------------------------------------------
 param orgPrefix string = 'org'
 param appPrefix string = 'app'
 @allowed(['dev','qa','stg','prod'])

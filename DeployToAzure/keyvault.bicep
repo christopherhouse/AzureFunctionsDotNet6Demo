@@ -18,7 +18,7 @@ param functionAppPrincipalId string
 param functionInsightsKey string
 
 // --------------------------------------------------------------------------------
-var keyVaultName = '${orgPrefix}-${appPrefix}-keyvault-${environmentCode}${appSuffix}'
+var keyVaultName = '${orgPrefix}-${appPrefix}-keyvault-${environmentCode}'
 
 // --------------------------------------------------------------------------------
 resource functionStorageAccountResource 'Microsoft.Storage/storageAccounts@2021-04-01' existing = { name: functionStorageAccountName }
