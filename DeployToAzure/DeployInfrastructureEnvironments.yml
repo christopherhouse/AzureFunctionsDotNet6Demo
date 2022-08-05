@@ -1,4 +1,4 @@
-﻿# --------------------------------------------------------------------------------
+# --------------------------------------------------------------------------------
 # Pipeline to deploy Azure Resources for All Environments for the Azure Function Example Project
 # --------------------------------------------------------------------------------
 # TODO: create variable group and use those values
