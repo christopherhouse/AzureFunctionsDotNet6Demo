@@ -22,19 +22,19 @@ stages:
   jobs:
   - template: DeployInfrastructureEnvironment.yml
     parameters:
-      environmentCode: ${{ variables.environmentCode }}
-      environmentUpper: ${{ variables.environmentUpper }}
-      resourceGroupName: ${{ variables.resourceGroupName }}
-      subscriptionName: ${{ variables.subscriptionName }}
-      subscriptionId: ${{ variables.subscriptionId }}
-      location: ${{ variables.location }}
-      orgPrefix: ${{ variables.orgPrefix }}
-      appPrefix: ${{ variables.appPrefix }}
-      appSuffix: ${{ variables.appSuffix }}
-      storageSku: ${{ variables.storageSku }}
-      functionAppSku: ${{ variables.functionAppSku }}
-      functionAppSkuFamily: ${{ variables.functionAppSkuFamily }}
-      functionAppSkuTier: ${{ variables.functionAppSkuTier }}
+      environmentCode: ${{ variablegroups.environmentCode }}
+      environmentUpper: ${{ variablegroups.environmentUpper }}
+      resourceGroupName: ${{ variablegroups.resourceGroupName }}
+      subscriptionName: ${{ variablegroups.subscriptionName }}
+      subscriptionId: ${{ variablegroups.subscriptionId }}
+      location: ${{ variablegroups.location }}
+      orgPrefix: ${{ variablegroups.orgPrefix }}
+      appPrefix: ${{ variablegroups.appPrefix }}
+      appSuffix: ${{ variablegroups.appSuffix }}
+      storageSku: ${{ variablegroups.storageSku }}
+      functionAppSku: ${{ variablegroups.functionAppSku }}
+      functionAppSkuFamily: ${{ variablegroups.functionAppSkuFamily }}
+      functionAppSkuTier: ${{ variablegroups.functionAppSkuTier }}
       runDateTime: 'Pipeline-$(Build.BuildNumber)'
     #parameters:
     #    environmentCode: 'dev'
