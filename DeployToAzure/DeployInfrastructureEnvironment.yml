@@ -11,7 +11,7 @@ jobs:
   - deployment: DeployEnvironment
     displayName: 'Initialize Deploy'
     environment: $(environmentUpper)
-  - job: Deploy Job
+  - job: Deploy_Job
     displayName: Deploy Environment
     variables:
       - group: ${{ parameters.variableGroupName }}
