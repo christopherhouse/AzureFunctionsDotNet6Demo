@@ -22,7 +22,5 @@ The infrastructure template provisions a single Cosmos DB account and database. 
 
 
 ## Deploying
-The pipeline folder contains an [Azure DevOps pipeline](pipelines/pipeline.yaml) that will build the Function code, deploy the required infrastructure and deploy the Function app.
+The pipeline folder contains an [Azure DevOps pipeline](DeployToAzure/Deploy-Infrastructure.yml) deploy the required infrastructure and [Azure DevOps pipeline](DeployToAzure/Deploy-FunctionApp.yml) that will build the Function code and deploy the Function app.
 
-### Installing pre-reqs
-The infrastructure template uses v0.01 of the Bicep DSL.  To build the template, install the Bicep tooling.  The [Azure DevOps pipeline](pipelines/pipeline.yaml) installs the tooling on the build agent via a [bash script](infrastructure/install.sh).
