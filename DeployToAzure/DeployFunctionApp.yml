@@ -19,6 +19,7 @@ trigger:
       - main
   paths:
     exclude: 
+      - '**/*.yml'
       - '**/*.yaml'
       - '**/*.bicep'
 

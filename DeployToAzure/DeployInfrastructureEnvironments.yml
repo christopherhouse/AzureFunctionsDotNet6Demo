@@ -25,6 +25,7 @@ pool:
 trigger:
   paths:
     include: 
+      - '**/*.yml'
       - '**/*.yaml'
       - '**/*.bicep'
 
