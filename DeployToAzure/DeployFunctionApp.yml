@@ -74,7 +74,7 @@ stages:
               azureSubscription: '$(subscriptionName)'
               appType: functionApp
               appName: $(functionAppNameDev)
-              package: '$(Pipeline.Workspace)/drop/$(Build.BuildId).zip'
+              package: $(Pipeline.Workspace)/Code/*.zip
 
 # ------------------------------------------------------------------------------------------------------------------------
 - stage: DeployQA
@@ -97,4 +97,4 @@ stages:
               azureSubscription: '$(subscriptionName)'
               appType: functionApp
               appName: $(functionAppNameQA)
-              package: '$(Pipeline.Workspace)/drop/$(Build.BuildId).zip'
+              package: $(Pipeline.Workspace)/Code/*.zip
