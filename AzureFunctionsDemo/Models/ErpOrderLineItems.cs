@@ -1,5 +1,4 @@
 ﻿namespace AzureFunctionsDotNet6Demo.Models;
-
 public class ErpOrderLineItems
 {
     public int LineNumber { get; set; }

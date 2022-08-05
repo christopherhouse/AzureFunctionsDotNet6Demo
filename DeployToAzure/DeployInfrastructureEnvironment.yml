@@ -1,0 +1,45 @@
+﻿# --------------------------------------------------------------------------------
+# Pipeline to deploy all Azure Resources for one environment for the Azure Function Example Project
+# --------------------------------------------------------------------------------
+parameters:
+  subscriptionName: 'My Subscription Name (mySubscriptionId)'
+  subscriptionId: 'mySubscriptionId'
+  resourceGroupName: 'rg_myResourceGroup'
+
+  environmentCode: 'dev'
+  environmentUpper: 'DEV'
+  regionName: 'eastus'
+  orgPrefix: 'org'
+  appPrefix: 'app'
+  appSuffix: '1'
+  storageSku: 'Standard_LRS'
+  functionAppSku: 'Y1'
+  functionAppSkuFamily: 'Y'
+  functionAppSkuTier: 'Dynamic'
+  runDateTime: '12-31-2020 23:59:59'
+
+# --------------------------------------------------------------------------------
+jobs:
+  - deployment: DeployEnvironment
+    displayName: 'Initialize ${{parameters.environmentUpper}} Deploy'
+    environment: ${{parameters.environmentUpper}}
+  - job: Deploy_${{parameters.environmentUpper}}
+    displayName: Deploy ${{parameters.environmentUpper}} Environment
+    steps:
+    # - script: az bicep build --file Bicep/main.bicep --outfile Bicep/main.json
+    #   displayName: 'Compile main Bicep file to ARM'
+    - task: AzureResourceManagerTemplateDeployment@3
+      displayName: 'Deploy ARM to ${{parameters.environmentUpper}}'
+      inputs:
+        deploymentScope: 'Resource Group'
+        azureResourceManagerConnection: '${{parameters.subscriptionName}}'
+        subscriptionId: '${{parameters.subscriptionId}}'
+        action: 'Create Or Update Resource Group'
+        resourceGroupName: '${{parameters.resourceGroupName}}'
+        location: '${{parameters.regionName}}'
+        templateLocation: 'Linked artifact'
+        csmFile: 'Bicep/main.bicep'
+        overrideParameters: '-environmentCode ${{parameters.environmentCode}} -regionName ${{parameters.regionName}} -orgPrefix ${{parameters.orgPrefix}} -appPrefix ${{parameters.appPrefix}} -appSuffix ${{parameters.appSuffix}} -storageSku ${{parameters.storageSku}} -functionAppSku ${{parameters.functionAppSku}} -functionAppSkuFamily ${{parameters.functionAppSkuFamily}} -functionAppSkuTier ${{parameters.functionAppSkuTier}} -runDateTime ${{parameters.runDateTime}}'
+
+        deploymentMode: 'Incremental'
+        continueOnError: ignoreError
