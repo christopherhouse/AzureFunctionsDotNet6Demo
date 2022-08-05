@@ -17,27 +17,30 @@ name: $(date:yyyy).$(date:MM).$(date:dd)$(rev:.r)
 stages:
 - stage: DeployDEVResources
   displayName: DEV Deploy Resources
-  variables:
-  - group: 'FunctionDemoDevVariables'
+  #variables:
+  #- group: 'FunctionDemoDevVariables'
   jobs:
-  - script: echo Deploy to Environment $(Name) and resource group $(resourceGroupName)
-    displayName: 'Display variable from variable group'
+  #- script: echo Deploy to Environment $(Name) and resource group $(resourceGroupName)
+  #  displayName: 'Display variable from variable group'
   - template: DeployInfrastructureEnvironment.yml
     parameters:
-      environmentCode: $(environmentCode)
-      environmentUpper: $(environmentUpper)
-      resourceGroupName: $(resourceGroupName)
-      subscriptionName: $(subscriptionName)
-      subscriptionId: $(subscriptionId)
-      location: $(location)
-      orgPrefix: $(orgPrefix)
-      appPrefix: $(appPrefix)
-      appSuffix: $(appSuffix)
-      storageSku: $(storageSku)
-      functionAppSku: $(functionAppSku)
-      functionAppSkuFamily: $(functionAppSkuFamily)
-      functionAppSkuTier: $(functionAppSkuTier)
+      GroupVariablesName: 'FunctionDemoDevVariables'
       runDateTime: 'Pipeline-$(Build.BuildNumber)'
+    #parameters:
+    #  environmentCode: $(environmentCode)
+    #  environmentUpper: $(environmentUpper)
+    #  resourceGroupName: $(resourceGroupName)
+    #  subscriptionName: $(subscriptionName)
+    #  subscriptionId: $(subscriptionId)
+    #  location: $(location)
+    #  orgPrefix: $(orgPrefix)
+    #  appPrefix: $(appPrefix)
+    #  appSuffix: $(appSuffix)
+    #  storageSku: $(storageSku)
+    #  functionAppSku: $(functionAppSku)
+    #  functionAppSkuFamily: $(functionAppSkuFamily)
+    #  functionAppSkuTier: $(functionAppSkuTier)
+    #  runDateTime: 'Pipeline-$(Build.BuildNumber)'
     #parameters:
     #    environmentCode: 'dev'
     #    environmentUpper: 'DEV'
@@ -58,25 +61,28 @@ stages:
   displayName: QA Deploy Resources
   dependsOn: DeployDEVResources
   condition: succeeded('DeployDEVResources')
-  variables:
-  - group: 'FunctionDemoQAVariables'
+  #variables:
+  #- group: 'FunctionDemoQAVariables'
   jobs:
   - template: DeployInfrastructureEnvironment.yml
     parameters:
-      environmentCode: $(environmentCode)
-      environmentUpper: $(environmentUpper)
-      resourceGroupName: $(resourceGroupName)
-      subscriptionName: $(subscriptionName)
-      subscriptionId: $(subscriptionId)
-      location: $(location)
-      orgPrefix: $(orgPrefix)
-      appPrefix: $(appPrefix)
-      appSuffix: $(appSuffix)
-      storageSku: $(storageSku)
-      functionAppSku: $(functionAppSku)
-      functionAppSkuFamily: $(functionAppSkuFamily)
-      functionAppSkuTier: $(functionAppSkuTier)
+      GroupVariablesName: 'FunctionDemoQAVariables'
       runDateTime: 'Pipeline-$(Build.BuildNumber)'
+    #parameters:
+    #  environmentCode: $(environmentCode)
+    #  environmentUpper: $(environmentUpper)
+    #  resourceGroupName: $(resourceGroupName)
+    #  subscriptionName: $(subscriptionName)
+    #  subscriptionId: $(subscriptionId)
+    #  location: $(location)
+    #  orgPrefix: $(orgPrefix)
+    #  appPrefix: $(appPrefix)
+    #  appSuffix: $(appSuffix)
+    #  storageSku: $(storageSku)
+    #  functionAppSku: $(functionAppSku)
+    #  functionAppSkuFamily: $(functionAppSkuFamily)
+    #  functionAppSkuTier: $(functionAppSkuTier)
+    #  runDateTime: 'Pipeline-$(Build.BuildNumber)'
     #parameters:
     #    environmentCode: 'qa'
     #    environmentUpper: 'QA'
