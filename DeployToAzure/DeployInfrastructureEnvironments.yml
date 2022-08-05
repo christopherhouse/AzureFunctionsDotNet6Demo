@@ -21,36 +21,36 @@ stages:
   - group: 'FunctionDemoDevVariables'
   jobs:
   - template: DeployInfrastructureEnvironment.yml
-    #parameters:
-    #  environmentCode: $(environmentCode)
-    #  environmentUpper: $(environmentUpper)
-    #  resourceGroupName: $(resourceGroupName)
-    #  subscriptionName: $(subscriptionName)
-    #  subscriptionId: $(subscriptionId)
-    #  location: $(location)
-    #  orgPrefix: $(orgPrefix)
-    #  appPrefix: $(appPrefix)
-    #  appSuffix: $(appSuffix)
-    #  storageSku: $(storageSku)
-    #  functionAppSku: $(functionAppSku)
-    #  functionAppSkuFamily: $(functionAppSkuFamily)
-    #  functionAppSkuTier: $(functionAppSkuTier)
-    #  runDateTime: 'Pipeline-$(Build.BuildNumber)'
     parameters:
-        environmentCode: 'dev'
-        environmentUpper: 'DEV'
-        resourceGroupName: 'rg_functionexample'
-        subscriptionName: 'Lyles Azure Sandbox (6d1ced742-2c89-420b-a12a-6d9dc6d48c43)'
-        subscriptionId: 'd1ced742-2c89-420b-a12a-6d9dc6d48c43'
-        location: 'eastus'
-        orgPrefix: 'lll'
-        appPrefix: 'funcdemo'
-        appSuffix: '1'
-        storageSku: 'Standard_LRS'
-        functionAppSku: 'Y1'
-        functionAppSkuFamily: 'Y'
-        functionAppSkuTier: 'Dynamic'
-        runDateTime: 'Pipeline-$(Build.BuildNumber)'
+      environmentCode: ${{ variables.environmentCode }}
+      environmentUpper: ${{ variables.environmentUpper }}
+      resourceGroupName: ${{ variables.resourceGroupName }}
+      subscriptionName: ${{ variables.subscriptionName }}
+      subscriptionId: ${{ variables.subscriptionId }}
+      location: ${{ variables.location }}
+      orgPrefix: ${{ variables.orgPrefix }}
+      appPrefix: ${{ variables.appPrefix }}
+      appSuffix: ${{ variables.appSuffix }}
+      storageSku: ${{ variables.storageSku }}
+      functionAppSku: ${{ variables.functionAppSku }}
+      functionAppSkuFamily: ${{ variables.functionAppSkuFamily }}
+      functionAppSkuTier: ${{ variables.functionAppSkuTier }}
+      runDateTime: 'Pipeline-$(Build.BuildNumber)'
+    #parameters:
+    #    environmentCode: 'dev'
+    #    environmentUpper: 'DEV'
+    #    resourceGroupName: 'rg_functionexample'
+    #    subscriptionName: 'Lyles Azure Sandbox (6d1ced742-2c89-420b-a12a-6d9dc6d48c43 }}'
+    #    subscriptionId: 'd1ced742-2c89-420b-a12a-6d9dc6d48c43'
+    #    location: 'eastus'
+    #    orgPrefix: 'lll'
+    #    appPrefix: 'funcdemo'
+    #    appSuffix: '1'
+    #    storageSku: 'Standard_LRS'
+    #    functionAppSku: 'Y1'
+    #    functionAppSkuFamily: 'Y'
+    #    functionAppSkuTier: 'Dynamic'
+    #    runDateTime: 'Pipeline-$(Build.BuildNumber)'
 
 - stage: DeployQAResources
   displayName: QA Deploy Resources
@@ -60,33 +60,33 @@ stages:
   - group: 'FunctionDemoQAVariables'
   jobs:
   - template: DeployInfrastructureEnvironment.yml
-    #parameters:
-    #  environmentCode: $(environmentCode)
-    #  environmentUpper: $(environmentUpper)
-    #  resourceGroupName: $(resourceGroupName)
-    #  subscriptionName: $(subscriptionName)
-    #  subscriptionId: $(subscriptionId)
-    #  location: $(location)
-    #  orgPrefix: $(orgPrefix)
-    #  appPrefix: $(appPrefix)
-    #  appSuffix: $(appSuffix)
-    #  storageSku: $(storageSku)
-    #  functionAppSku: $(functionAppSku)
-    #  functionAppSkuFamily: $(functionAppSkuFamily)
-    #  functionAppSkuTier: $(functionAppSkuTier)
-    #  runDateTime: 'Pipeline-$(Build.BuildNumber)'
     parameters:
-        environmentCode: 'qa'
-        environmentUpper: 'QA'
-        resourceGroupName: 'rg_functionexample-qa'
-        subscriptionName: 'Lyles Azure Sandbox (6d1ced742-2c89-420b-a12a-6d9dc6d48c43)'
-        subscriptionId: 'd1ced742-2c89-420b-a12a-6d9dc6d48c43'
-        location: 'eastus'
-        orgPrefix: 'lll'
-        appPrefix: 'funcdemo'
-        appSuffix: '1'
-        storageSku: 'Standard_LRS'
-        functionAppSku: 'Y1'
-        functionAppSkuFamily: 'Y'
-        functionAppSkuTier: 'Dynamic'
-        runDateTime: 'Pipeline-$(Build.BuildNumber)'
+      environmentCode: ${{ variables.environmentCode }}
+      environmentUpper: ${{ variables.environmentUpper }}
+      resourceGroupName: ${{ variables.resourceGroupName }}
+      subscriptionName: ${{ variables.subscriptionName }}
+      subscriptionId: ${{ variables.subscriptionId }}
+      location: ${{ variables.location }}
+      orgPrefix: ${{ variables.orgPrefix }}
+      appPrefix: ${{ variables.appPrefix }}
+      appSuffix: ${{ variables.appSuffix }}
+      storageSku: ${{ variables.storageSku }}
+      functionAppSku: ${{ variables.functionAppSku }}
+      functionAppSkuFamily: ${{ variables.functionAppSkuFamily }}
+      functionAppSkuTier: ${{ variables.functionAppSkuTier }}
+      runDateTime: 'Pipeline-$(Build.BuildNumber }}'
+    #parameters:
+    #    environmentCode: 'qa'
+    #    environmentUpper: 'QA'
+    #    resourceGroupName: 'rg_functionexample-qa'
+    #    subscriptionName: 'Lyles Azure Sandbox (6d1ced742-2c89-420b-a12a-6d9dc6d48c43)'
+    #    subscriptionId: 'd1ced742-2c89-420b-a12a-6d9dc6d48c43'
+    #    location: 'eastus'
+    #    orgPrefix: 'lll'
+    #    appPrefix: 'funcdemo'
+    #    appSuffix: '1'
+    #    storageSku: 'Standard_LRS'
+    #    functionAppSku: 'Y1'
+    #    functionAppSkuFamily: 'Y'
+    #    functionAppSkuTier: 'Dynamic'
+    #    runDateTime: 'Pipeline-$(Build.BuildNumber)'
