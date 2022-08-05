@@ -3,35 +3,23 @@
 # --------------------------------------------------------------------------------
 parameters:
   variableGroupName: 'myVariableGroup'
-  #subscriptionName: 'My Subscription Name (mySubscriptionId)'
-  #subscriptionId: 'mySubscriptionId'
-  #resourceGroupName: 'rg_myResourceGroup'
-  #environmentCode: 'dev'
   environmentUpper: 'DEV'
-  #location: 'eastus'
-  #orgPrefix: 'org'
-  #appPrefix: 'app'
-  #appSuffix: '1'
-  #storageSku: 'Standard_LRS'
-  #functionAppSku: 'Y1'
-  #functionAppSkuFamily: 'Y'
-  #functionAppSkuTier: 'Dynamic'
   runDateTime: '12-31-2020 23:59:59'
 
 # --------------------------------------------------------------------------------
 jobs:
   - deployment: DeployEnvironment
     displayName: 'Initialize Deploy'
-    environment: DEV
+    environment: $(environmentUpper)
   - job: Deploy_DEV
     displayName: Deploy Environment
     variables:
       - group: ${{ parameters.variableGroupName }}
     steps:
-    - script: az bicep build --file DeployToAzure/main.bicep --outfile DeployToAzure/main.json
-      displayName: 'Compile main Bicep file to ARM'
+    #- script: az bicep build --file DeployToAzure/main.bicep --outfile DeployToAzure/main.json
+    #  displayName: 'Compile main Bicep file to ARM'
     - task: AzureResourceManagerTemplateDeployment@3
-      displayName: 'Deploy ARM to $(environmentUpper)'
+      displayName: 'Deploy ARM Templates'
       inputs:
         deploymentScope: 'Resource Group'
         azureResourceManagerConnection: '$(subscriptionName)'

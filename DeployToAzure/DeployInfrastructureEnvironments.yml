@@ -1,7 +1,20 @@
 # --------------------------------------------------------------------------------
 # Pipeline to deploy Azure Resources for All Environments for the Azure Function Example Project
 # --------------------------------------------------------------------------------
-# TODO: create variable group and use those values
+# Create a variable group for each environment with these variables:
+#   environmentCode: 'dev/qa/prod'
+#   environmentUpper: 'DEV/QA/PROD'
+#   resourceGroupName: 'rg_resourceGroupName'
+#   subscriptionName: '<ServiceConnectionName / Subscription Name>'
+#   subscriptionId: '<subscriptionId>'
+#   location: 'eastus'
+#   orgPrefix: '<org - your initials>'
+#   appPrefix: 'funcdemo'
+#   appSuffix: '1'
+#   storageSku: 'Standard_LRS'
+#   functionAppSku: 'Y1'
+#   functionAppSkuFamily: 'Y'
+#   functionAppSkuTier: 'Dynamic'
 # --------------------------------------------------------------------------------
 
 trigger: none # fire this manually for now
@@ -17,86 +30,20 @@ name: $(date:yyyy).$(date:MM).$(date:dd)$(rev:.r)
 stages:
 - stage: DeployDEVResources
   displayName: DEV Deploy Resources
-  #variables:
-  #- group: 'FunctionDemoDevVariables'
   jobs:
-  #- script: echo Deploy to Environment $(Name) and resource group $(resourceGroupName)
-  #  displayName: 'Display variable from variable group'
   - template: DeployInfrastructureEnvironment.yml
     parameters:
       variableGroupName: 'FunctionDemoDevVariables'
       environmentUpper: 'DEV'
       runDateTime: 'Pipeline-$(Build.BuildNumber)'
-    #parameters:
-    #  environmentCode: $(environmentCode)
-    #  environmentUpper: $(environmentUpper)
-    #  resourceGroupName: $(resourceGroupName)
-    #  subscriptionName: $(subscriptionName)
-    #  subscriptionId: $(subscriptionId)
-    #  location: $(location)
-    #  orgPrefix: $(orgPrefix)
-    #  appPrefix: $(appPrefix)
-    #  appSuffix: $(appSuffix)
-    #  storageSku: $(storageSku)
-    #  functionAppSku: $(functionAppSku)
-    #  functionAppSkuFamily: $(functionAppSkuFamily)
-    #  functionAppSkuTier: $(functionAppSkuTier)
-    #  runDateTime: 'Pipeline-$(Build.BuildNumber)'
-    #parameters:
-    #    environmentCode: 'dev'
-    #    environmentUpper: 'DEV'
-    #    resourceGroupName: 'rg_functionexample'
-    #    subscriptionName: 'Lyles Azure Sandbox (6d1ced742-2c89-420b-a12a-6d9dc6d48c43)'
-    #    subscriptionId: 'd1ced742-2c89-420b-a12a-6d9dc6d48c43'
-    #    location: 'eastus'
-    #    orgPrefix: 'lll'
-    #    appPrefix: 'funcdemo'
-    #    appSuffix: '1'
-    #    storageSku: 'Standard_LRS'
-    #    functionAppSku: 'Y1'
-    #    functionAppSkuFamily: 'Y'
-    #    functionAppSkuTier: 'Dynamic'
-    #    runDateTime: 'Pipeline-$(Build.BuildNumber)'
 
 - stage: DeployQAResources
   displayName: QA Deploy Resources
   dependsOn: DeployDEVResources
   condition: succeeded('DeployDEVResources')
-  #variables:
-  #- group: 'FunctionDemoQAVariables'
   jobs:
   - template: DeployInfrastructureEnvironment.yml
     parameters:
       variableGroupName: 'FunctionDemoQAVariables'
       environmentUpper: 'QA'
       runDateTime: 'Pipeline-$(Build.BuildNumber)'
-    #parameters:
-    #  environmentCode: $(environmentCode)
-    #  environmentUpper: $(environmentUpper)
-    #  resourceGroupName: $(resourceGroupName)
-    #  subscriptionName: $(subscriptionName)
-    #  subscriptionId: $(subscriptionId)
-    #  location: $(location)
-    #  orgPrefix: $(orgPrefix)
-    #  appPrefix: $(appPrefix)
-    #  appSuffix: $(appSuffix)
-    #  storageSku: $(storageSku)
-    #  functionAppSku: $(functionAppSku)
-    #  functionAppSkuFamily: $(functionAppSkuFamily)
-    #  functionAppSkuTier: $(functionAppSkuTier)
-    #  runDateTime: 'Pipeline-$(Build.BuildNumber)'
-    #parameters:
-    #    environmentCode: 'qa'
-    #    environmentUpper: 'QA'
-    #    resourceGroupName: 'rg_functionexample-qa'
-    #    subscriptionName: 'Lyles Azure Sandbox (6d1ced742-2c89-420b-a12a-6d9dc6d48c43)'
-    #    subscriptionId: 'd1ced742-2c89-420b-a12a-6d9dc6d48c43'
-    #    location: 'eastus'
-    #    orgPrefix: 'lll'
-    #    appPrefix: 'funcdemo'
-    #    appSuffix: '1'
-    #    storageSku: 'Standard_LRS'
-    #    functionAppSku: 'Y1'
-    #    functionAppSkuFamily: 'Y'
-    #    functionAppSkuTier: 'Dynamic'
-    #    runDateTime: 'Pipeline-$(Build.BuildNumber)'
