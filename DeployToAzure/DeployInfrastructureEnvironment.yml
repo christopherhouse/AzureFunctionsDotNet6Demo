@@ -1,15 +1,17 @@
-﻿# --------------------------------------------------------------------------------
+﻿# ----------------------------------------------------------------------------------------------------
 # Pipeline to deploy all Azure Resources for one environment for the Azure Function Example Project
-# --------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------------------
 parameters:
   variableGroupName: 'myVariableGroup'
+  environmentUpper: 'DEV'
   runDateTime: '12-31-2020 23:59:59'
 
-# --------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------------------
 jobs:
   - deployment: DeployEnvironment
     displayName: 'Initialize Deploy'
-  - job: Deploy_DEV
+    environment: $(environmentUpper)
+  - job: Deploy Job
     displayName: Deploy Environment
     variables:
       - group: ${{ parameters.variableGroupName }}

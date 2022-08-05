@@ -1,6 +1,6 @@
-# --------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------------------
 # Pipeline to deploy Azure Resources for All Environments for the Azure Function Example Project
-# --------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------------------
 # Create a variable group for each environment with these variables:
 #   environmentCode: 'dev/qa/prod'
 #   environmentUpper: 'DEV/QA/PROD'
@@ -15,8 +15,7 @@
 #   functionAppSku: 'Y1'
 #   functionAppSkuFamily: 'Y'
 #   functionAppSkuTier: 'Dynamic'
-# --------------------------------------------------------------------------------
-
+# ----------------------------------------------------------------------------------------------------
 trigger: none # fire this manually for now
 # trigger:
 # - main
@@ -26,19 +25,19 @@ pool:
 
 name: $(date:yyyy).$(date:MM).$(date:dd)$(rev:.r)
 
-# --------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------------------
 stages:
 - stage: DeployDEVResources
-  environment: 'DEV'
   displayName: DEV Deploy Resources
   jobs:
   - template: DeployInfrastructureEnvironment.yml
     parameters:
       variableGroupName: 'FunctionDemo-Infra-Dev'
+      environmentUpper: 'DEV'
       runDateTime: 'Pipeline-$(Build.BuildNumber)'
 
+# ----------------------------------------------------------------------------------------------------
 - stage: DeployQAResources
-  environment: 'QA'
   displayName: QA Deploy Resources
   dependsOn: DeployDEVResources
   condition: succeeded('DeployDEVResources')
@@ -46,4 +45,5 @@ stages:
   - template: DeployInfrastructureEnvironment.yml
     parameters:
       variableGroupName: 'FunctionDemo-Infra-QA'
+      environmentUpper: 'QA'
       runDateTime: 'Pipeline-$(Build.BuildNumber)'
