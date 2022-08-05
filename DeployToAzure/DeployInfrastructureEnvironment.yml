@@ -26,8 +26,8 @@ jobs:
   - job: Deploy_${{parameters.environmentUpper}}
     displayName: Deploy ${{parameters.environmentUpper}} Environment
     steps:
-    # - script: az bicep build --file Bicep/main.bicep --outfile Bicep/main.json
-    #   displayName: 'Compile main Bicep file to ARM'
+    - script: az bicep build --file Bicep/main.bicep --outfile Bicep/main.json
+      displayName: 'Compile main Bicep file to ARM'
     - task: AzureResourceManagerTemplateDeployment@3
       displayName: 'Deploy ARM to ${{parameters.environmentUpper}}'
       inputs:
