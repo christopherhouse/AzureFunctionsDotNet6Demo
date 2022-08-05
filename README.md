@@ -8,7 +8,7 @@ The following diagram illustrates the components and data flow that make up this
 
 The infrastructure template provisions a single Cosmos DB account and database.  Within the database, there are two containers, one for orders and one for products.  Two of the Functions write orders to the Orders container.  A Function listens to the Change Feed on the Orders container and uses data received from that to update available inventory numbers in the Products container.  Additionally, several Functions query the Products container.
 
-![Architecture Diagram](docs/Cosmos%20Functions%20Demo.png)
+![Architecture Diagram](/out/docs/architecture/Cosmos%20Functions%20Demo.png)
 ### Functions
 
 | Function Name             | Description                              |
