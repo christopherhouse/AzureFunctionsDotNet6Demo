@@ -34,7 +34,7 @@ stages:
 - stage: DeployDEVResources
   displayName: DEV Deploy Resources
   jobs:
-  - template: DeployInfrastructureEnvironment.yml
+  - template: Deploy-Bicep.yml
     parameters:
       variableGroupName: 'FunctionDemo-Infra-Dev'
       environmentUpper: 'DEV'
@@ -46,7 +46,7 @@ stages:
   dependsOn: DeployDEVResources
   condition: succeeded('DeployDEVResources')
   jobs:
-  - template: DeployInfrastructureEnvironment.yml
+  - template: Deploy-Bicep.yml
     parameters:
       variableGroupName: 'FunctionDemo-Infra-QA'
       environmentUpper: 'QA'
