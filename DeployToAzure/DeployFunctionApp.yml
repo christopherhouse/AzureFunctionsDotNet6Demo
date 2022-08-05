@@ -7,18 +7,22 @@
 #   subscriptionNameQA: '<ServiceConnectionName / Subscription Name>'
 #   functionAppNameQA: 'lll-funcdemo-func-qa-1'
 # ------------------------------------------------------------------------------------------------------------------------
-
-trigger: none # fire this manually for now
-# trigger:
-#   branches:
-#     include:
-#     - master
-
+name: $(date:yyyy).$(date:MM).$(date:dd)$(rev:.r)
 pool:
   vmImage: 'windows-latest'
 
-name: $(date:yyyy).$(date:MM).$(date:dd)$(rev:.r)
+# ------------------------------------------------------------------------------------------------------------------------
+#trigger: none # fire this manually for now
+trigger:
+  branches:
+    include: 
+      - main
+  paths:
+    exclude: 
+      - '**/*.yaml'
+      - '**/*.bicep'
 
+# ------------------------------------------------------------------------------------------------------------------------
 variables:
   - group: 'FunctionDemo-Deploy-FunctionApp'
 
