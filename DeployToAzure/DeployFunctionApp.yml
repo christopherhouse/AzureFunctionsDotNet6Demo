@@ -2,9 +2,10 @@
 # Build for IoT Function App Processor for the Azure Function Example Project
 # ------------------------------------------------------------------------------------------------------------------------
 # Create a variable group for each environment with these variables:
+#   subscriptionNameDev: '<ServiceConnectionName / Subscription Name>'
 #   functionAppNameDev: 'lll-funcdemo-func-dev-1'
+#   subscriptionNameQA: '<ServiceConnectionName / Subscription Name>'
 #   functionAppNameQA: 'lll-funcdemo-func-qa-1'
-#   subscriptionName: '<ServiceConnectionName / Subscription Name>'
 # ------------------------------------------------------------------------------------------------------------------------
 
 trigger: none # fire this manually for now
@@ -71,7 +72,7 @@ stages:
           - task: AzureFunctionApp@1
             displayName: 'Azure functions app deploy'
             inputs:
-              azureSubscription: '$(subscriptionName)'
+              azureSubscription: '$(subscriptionNameDev)'
               appType: functionApp
               appName: $(functionAppNameDev)
               package: $(Pipeline.Workspace)/Code/*.zip
@@ -94,7 +95,7 @@ stages:
           - task: AzureFunctionApp@1
             displayName: 'Azure functions app deploy'
             inputs:
-              azureSubscription: '$(subscriptionName)'
+              azureSubscription: '$(subscriptionNameQA)'
               appType: functionApp
               appName: $(functionAppNameQA)
               package: $(Pipeline.Workspace)/Code/*.zip
