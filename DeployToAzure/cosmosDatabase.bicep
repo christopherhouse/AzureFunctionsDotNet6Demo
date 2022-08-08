@@ -1,6 +1,10 @@
 ﻿// --------------------------------------------------------------------------------
 // This BICEP file will create a Cosmos Database for the Azure Function Example Project
-// TODO: Change this to use array of containers...
+// This expects a parameter with a list of containers/keys, something like this:
+//   var cosmosContainerArray = [
+//     { name: 'products', partitionKey: '/category' }
+//     { name: 'orders',   partitionKey: '/customerNumber' } 
+//   ]
 // --------------------------------------------------------------------------------
 param orgPrefix string = 'org'
 param appPrefix string = 'app'
@@ -10,11 +14,7 @@ param appSuffix string = '1'
 param location string = resourceGroup().location
 param runDateTime string = utcNow()
 param templateFileName string = '~function.bicep'
-
-param productsContainerName string = 'products'
-param productsPartitionKey string = '/category'
-param ordersContainerName string = 'orders'
-param ordersPartitionKey string = '/customerNumber'
+param containerArray array
 
 // --------------------------------------------------------------------------------
 var cosmosAccountName = '${orgPrefix}-${appPrefix}-cosmos-acct${environmentCode}${appSuffix}'
@@ -85,11 +85,11 @@ resource cosmosDbResource 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases@20
     }
 }
 
-resource productsContainerResource 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2020-06-01-preview' = {
-    name: '${cosmosDbResource.name}/${productsContainerName}'
+resource containerResources 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2020-06-01-preview' = [for container in containerArray: {
+    name: '${cosmosDbResource.name}/${container.name}'
     properties: {
         resource: {
-            id: productsContainerName
+            id: container.name
             indexingPolicy: {
                 indexingMode: 'consistent'
                 automatic: true
@@ -106,7 +106,7 @@ resource productsContainerResource 'Microsoft.DocumentDB/databaseAccounts/sqlDat
             }
             partitionKey: {
                 paths: [
-                    productsPartitionKey
+                    container.partitionKey
                 ]
                 kind: 'Hash'
             }
@@ -118,41 +118,6 @@ resource productsContainerResource 'Microsoft.DocumentDB/databaseAccounts/sqlDat
         options: {
         }
     }
-}
-
-resource ordersContainerResource 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2020-06-01-preview' = {
-    name: '${cosmosDbResource.name}/${ordersContainerName}'
-    properties: {
-        resource: {
-            id: ordersContainerName
-            indexingPolicy: {
-                indexingMode: 'consistent'
-                automatic: true
-                includedPaths: [
-                    {
-                        path: '/*'
-                    }
-                ]
-                excludedPaths: [
-                    {
-                        path: '/"_etag"/?'
-                    }
-                ]
-            }
-            partitionKey: {
-                paths: [
-                    ordersPartitionKey
-                ]
-                kind: 'hash'
-            }
-            conflictResolutionPolicy: {
-                mode: 'LastWriterWins'
-                conflictResolutionPath: '/_ts'
-            }
-        }
-        options: {
-        }
-    }
-}
+}]
 
 output cosmosAccountName string = cosmosAccountName

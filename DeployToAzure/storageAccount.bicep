@@ -8,7 +8,7 @@ param environmentCode string = 'dev'
 param appSuffix string = '1'
 param location string = resourceGroup().location
 param runDateTime string = utcNow()
-param templateFileName string = '~storage.bicep'
+param templateFileName string = '~storageAccount.bicep'
 
 param storageSku string = 'Standard_LRS'
 

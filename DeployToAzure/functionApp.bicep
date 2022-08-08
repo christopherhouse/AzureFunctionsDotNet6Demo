@@ -1,6 +1,7 @@
-﻿// --------------------------------------------------------------------------------
+﻿// ----------------------------------------------------------------------------------------------------
 // This BICEP file will create an Azure Function for the Azure Function Example Project
-// --------------------------------------------------------------------------------
+// TODO: can I split the unique configuration keys out into a separate file to make this more generic?
+// ----------------------------------------------------------------------------------------------------
 param orgPrefix string = 'org'
 param appPrefix string = 'app'
 @allowed(['dev','qa','stg','prod'])
@@ -8,23 +9,25 @@ param environmentCode string = 'dev'
 param appSuffix string = '1'
 param location string = resourceGroup().location
 param runDateTime string = utcNow()
-param templateFileName string = '~function.bicep'
+param templateFileName string = '~functionApp.bicep'
 param functionAppSku string = 'Y1'
 param functionAppSkuFamily string = 'Y'
 param functionAppSkuTier string = 'Dynamic'
+param functionStorageAccountName string
+
+// configuration keys unique to this solution...
 param cosmosDatabaseName string = 'cmh-cosmos-demo-db'
 param productsContainerName string = 'products'
 param ordersContainerName string = 'orders'
 param orderReceivedQueue string = 'orders-received'
 param ordersToErpQueue string = 'orders-to-erp'
-param functionStorageAccountName string
 
 // --------------------------------------------------------------------------------
 var functionAppName = toLower('${orgPrefix}-${appPrefix}-func-${environmentCode}${appSuffix}')
 var functionAppSvcName = '${functionAppName}-appsvc'
 var functionInsightsName = '${functionAppName}-insights'
 
-var keyVaultName = '${orgPrefix}${appPrefix}keyvault${environmentCode}'
+var keyVaultName = '${orgPrefix}${appPrefix}vault${environmentCode}${appSuffix}'
 var cosmosConnectionStringReference = '@Microsoft.KeyVault(VaultName=${keyVaultName};SecretName=cosmosConnectionString)'
 var serviceBusReceiveConnectionStringReference = '@Microsoft.KeyVault(VaultName=${keyVaultName};SecretName=serviceBusReceiveConnectionString)'
 var serviceBusSendConnectionStringReference = '@Microsoft.KeyVault(VaultName=${keyVaultName};SecretName=serviceBusSendConnectionString)'

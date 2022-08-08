@@ -22,12 +22,12 @@ param runDateTime string = utcNow()
 var deploymentSuffix = '-deploy-${runDateTime}'
 
 // --------------------------------------------------------------------------------
-module storageModule 'storage.bicep' = {
+module storageModule 'storageAccount.bicep' = {
   name: 'storage${deploymentSuffix}'
   params: {
     storageSku: storageSku
 
-    templateFileName: '~storage.bicep'
+    templateFileName: '~storageAccount.bicep'
     orgPrefix: orgPrefix
     appPrefix: appPrefix
     environmentCode: environmentCode
@@ -36,12 +36,12 @@ module storageModule 'storage.bicep' = {
     runDateTime:runDateTime
   }
 }
-module servicebusModule 'servicebus.bicep' = {
+module servicebusModule 'serviceBus.bicep' = {
   name: 'servicebus${deploymentSuffix}'
   params: {
     queueNames: ['orders-received','orders-to-erp']
 
-    templateFileName: '~servicebus.bicep'
+    templateFileName: '~serviceBus.bicep'
     orgPrefix: orgPrefix
     appPrefix: appPrefix
     environmentCode: environmentCode
@@ -50,7 +50,7 @@ module servicebusModule 'servicebus.bicep' = {
     runDateTime:runDateTime
   }
 }
-module functionModule 'function.bicep' = {
+module functionModule 'functionApp.bicep' = {
   name: 'function${deploymentSuffix}'
   dependsOn: [storageModule]
   params: {
@@ -59,7 +59,7 @@ module functionModule 'function.bicep' = {
     functionAppSkuTier: functionAppSkuTier
     functionStorageAccountName: storageModule.outputs.functionStorageAccountName
 
-    templateFileName: '~function.bicep'
+    templateFileName: '~functionApp.bicep'
     orgPrefix: orgPrefix
     appPrefix: appPrefix
     environmentCode: environmentCode
@@ -68,11 +68,18 @@ module functionModule 'function.bicep' = {
     runDateTime:runDateTime
   }
 }
-module cosmosModule 'cosmos.bicep' = {
+
+var cosmosContainerArray = [
+  { name: 'products', partitionKey: '/category' }
+  { name: 'orders', partitionKey: '/customerNumber' } 
+]
+module cosmosModule 'cosmosDatabase.bicep' = {
   name: 'cosmos${deploymentSuffix}'
   dependsOn: [storageModule]
   params: {
-    templateFileName: '~cosmos.bicep'
+    containerArray: cosmosContainerArray
+
+    templateFileName: '~cosmosDatabase.bicep'
     orgPrefix: orgPrefix
     appPrefix: appPrefix
     environmentCode: environmentCode
@@ -81,22 +88,31 @@ module cosmosModule 'cosmos.bicep' = {
     runDateTime:runDateTime
   }
 }
-module keyVaultModule 'keyvault.bicep' = {
+module keyVaultModule 'keyVault.bicep' = {
   name: 'keyvault${deploymentSuffix}'
   dependsOn: [storageModule, servicebusModule, functionModule, cosmosModule]
   params: {
     functionAppPrincipalId: functionModule.outputs.functionAppPrincipalId
-    functionInsightsKey: functionModule.outputs.functionInsightsKey
-    functionStorageAccountName: functionModule.outputs.functionStorageAccountName
-    serviceBusName: servicebusModule.outputs.serviceBusName
-    cosmosAccountName: cosmosModule.outputs.cosmosAccountName
-
-    templateFileName: '~keyvault.bicep'
+    owner1UserObjectId: 'd4aaf634-e777-4307-bb6e-7bf2305d166e' // Lyle's AD Guid
+    owner2UserObjectId: '209019b5-167b-45cd-ab9c-f987fa262040' // Chris's AD Guid
+   
+    templateFileName: '~keyVault.bicep'
     orgPrefix: orgPrefix
     appPrefix: appPrefix
     environmentCode: environmentCode
     appSuffix: appSuffix
     location: location
     runDateTime:runDateTime
+  }
+}
+module keyVaultSecretsModule 'keyVaultSecrets.bicep' = {
+  name: 'keyvaultSecrets${deploymentSuffix}'
+  dependsOn: [storageModule, servicebusModule, functionModule, cosmosModule,keyVaultModule]
+  params: {
+    keyVaultName: keyVaultModule.outputs.keyVaultName
+    functionInsightsKey: functionModule.outputs.functionInsightsKey
+    functionStorageAccountName: functionModule.outputs.functionStorageAccountName
+    serviceBusName: servicebusModule.outputs.serviceBusName
+    cosmosAccountName: cosmosModule.outputs.cosmosAccountName
   }
 }

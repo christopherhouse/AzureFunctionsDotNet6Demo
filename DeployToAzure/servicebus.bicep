@@ -8,7 +8,7 @@ param environmentCode string = 'dev'
 param appSuffix string = '1'
 param location string = resourceGroup().location
 param runDateTime string = utcNow()
-param templateFileName string = '~svcbus.bicep'
+param templateFileName string = '~serviceBus.bicep'
 
 param queueNames array = ['orders-received', 'orders-to-erp']
 
