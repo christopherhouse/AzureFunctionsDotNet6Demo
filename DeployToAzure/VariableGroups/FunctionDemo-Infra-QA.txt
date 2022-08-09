@@ -1,0 +1,13 @@
+appPrefix   funcdemo
+appSuffix
+environmentCode qa
+environmentUpper  QA
+functionAppSku  Y1
+functionAppSkuFamily  Y
+functionAppSkuTier  Dynamic
+location  eastus
+orgPrefix lll
+resourceGroupName rg_functiondemo_qa
+storageSku  Standard_LRS
+subscriptionId  xxx-xxx-xxx-xxx
+subscriptionName  Lyles Azure Sandbox

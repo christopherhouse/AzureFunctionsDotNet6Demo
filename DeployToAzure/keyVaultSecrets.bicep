@@ -1,7 +1,7 @@
-// ----------------------------------------------------------------------------------------------------
-// This BICEP file will create KeyVault secrets specific to the Azure Function Example Project
-// ----------------------------------------------------------------------------------------------------
-param keyVaultName string = 'myKeyVaultName'
+// --------------------------------------------------------------------------------
+// This BICEP file will create KeyVault secrets specific to this project
+// --------------------------------------------------------------------------------
+param keyVaultName string
 
 param functionStorageAccountName string
 param serviceBusName string

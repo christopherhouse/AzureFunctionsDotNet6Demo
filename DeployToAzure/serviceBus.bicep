@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------
-// This BICEP file will create a Service Bus for the Azure Function Example Project
+// This BICEP file will create a Service Bus
 // --------------------------------------------------------------------------------
 param orgPrefix string = 'org'
 param appPrefix string = 'app'
@@ -10,7 +10,7 @@ param location string = resourceGroup().location
 param runDateTime string = utcNow()
 param templateFileName string = '~serviceBus.bicep'
 
-param queueNames array = ['orders-received', 'orders-to-erp']
+param queueNames array = ['queue1Name', 'queue2Name']
 
 // --------------------------------------------------------------------------------
 var serviceBusName = '${orgPrefix}-${appPrefix}-svcbus-${environmentCode}${appSuffix}'

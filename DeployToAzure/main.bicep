@@ -7,11 +7,11 @@
 //   az deployment group create -n main-deploy-20220805T140000Z --resource-group rg_functiondemo_dev --template-file 'main.bicep' --parameters environmentCode=dev orgPrefix=lll appPrefix=funcdemo  
 //   az deployment group create -n main-deploy-20220805T140000Z --resource-group rg_functiondemo_qa --template-file 'main.bicep' --parameters environmentCode=qa orgPrefix=lll appPrefix=funcdemo  
 // --------------------------------------------------------------------------------
-param environmentCode string ='dev'
+param environmentCode string = 'dev'
 param location string = resourceGroup().location
 param orgPrefix string = 'org'
 param appPrefix string = 'app'
-param appSuffix string = ''  // '-1' 
+param appSuffix string = '' // '-1' 
 param storageSku string = 'Standard_LRS'
 param functionAppSku string = 'Y1'
 param functionAppSkuFamily string = 'Y'
@@ -33,13 +33,13 @@ module storageModule 'storageAccount.bicep' = {
     environmentCode: environmentCode
     appSuffix: appSuffix
     location: location
-    runDateTime:runDateTime
+    runDateTime: runDateTime
   }
 }
 module servicebusModule 'serviceBus.bicep' = {
   name: 'servicebus${deploymentSuffix}'
   params: {
-    queueNames: ['orders-received','orders-to-erp']
+    queueNames: [ 'orders-received', 'orders-to-erp' ]
 
     templateFileName: '~serviceBus.bicep'
     orgPrefix: orgPrefix
@@ -47,12 +47,12 @@ module servicebusModule 'serviceBus.bicep' = {
     environmentCode: environmentCode
     appSuffix: appSuffix
     location: location
-    runDateTime:runDateTime
+    runDateTime: runDateTime
   }
 }
 module functionModule 'functionApp.bicep' = {
   name: 'function${deploymentSuffix}'
-  dependsOn: [storageModule]
+  dependsOn: [ storageModule ]
   params: {
     functionAppSku: functionAppSku
     functionAppSkuFamily: functionAppSkuFamily
@@ -65,17 +65,17 @@ module functionModule 'functionApp.bicep' = {
     environmentCode: environmentCode
     appSuffix: appSuffix
     location: location
-    runDateTime:runDateTime
+    runDateTime: runDateTime
   }
 }
 
 var cosmosContainerArray = [
   { name: 'products', partitionKey: '/category' }
-  { name: 'orders', partitionKey: '/customerNumber' } 
+  { name: 'orders', partitionKey: '/customerNumber' }
 ]
 module cosmosModule 'cosmosDatabase.bicep' = {
   name: 'cosmos${deploymentSuffix}'
-  dependsOn: [storageModule]
+  dependsOn: [ storageModule ]
   params: {
     containerArray: cosmosContainerArray
 
@@ -85,29 +85,36 @@ module cosmosModule 'cosmosDatabase.bicep' = {
     environmentCode: environmentCode
     appSuffix: appSuffix
     location: location
-    runDateTime:runDateTime
+    runDateTime: runDateTime
   }
 }
+
+// Create a powershell step to put Owner Object Ids into variables:
+var owner1UserObjectId = 'd4aaf634-e777-4307-bb6e-7bf2305d166e' // Lyle's AD Guid
+var owner2UserObjectId = '209019b5-167b-45cd-ab9c-f987fa262040' // Chris's AD Guid
+//   > Connect-AzureAD
+//   > $owner1UserObjectId = (Get-AzureAdUser -ObjectId 'lyleluppes@microsoft.com').ObjectId
+
 module keyVaultModule 'keyVault.bicep' = {
   name: 'keyvault${deploymentSuffix}'
-  dependsOn: [storageModule, servicebusModule, functionModule, cosmosModule]
+  dependsOn: [ storageModule, servicebusModule, functionModule, cosmosModule ]
   params: {
     functionAppPrincipalId: functionModule.outputs.functionAppPrincipalId
-    owner1UserObjectId: 'd4aaf634-e777-4307-bb6e-7bf2305d166e' // Lyle's AD Guid
-    owner2UserObjectId: '209019b5-167b-45cd-ab9c-f987fa262040' // Chris's AD Guid
-   
+    owner1UserObjectId: owner1UserObjectId
+    owner2UserObjectId: owner2UserObjectId
+
     templateFileName: '~keyVault.bicep'
     orgPrefix: orgPrefix
     appPrefix: appPrefix
     environmentCode: environmentCode
     appSuffix: appSuffix
     location: location
-    runDateTime:runDateTime
+    runDateTime: runDateTime
   }
 }
 module keyVaultSecretsModule 'keyVaultSecrets.bicep' = {
   name: 'keyvaultSecrets${deploymentSuffix}'
-  dependsOn: [storageModule, servicebusModule, functionModule, cosmosModule,keyVaultModule]
+  dependsOn: [ storageModule, servicebusModule, functionModule, cosmosModule, keyVaultModule ]
   params: {
     keyVaultName: keyVaultModule.outputs.keyVaultName
     functionInsightsKey: functionModule.outputs.functionInsightsKey

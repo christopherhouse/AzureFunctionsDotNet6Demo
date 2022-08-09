@@ -24,8 +24,8 @@ param ordersToErpQueue string = 'orders-to-erp'
 
 // --------------------------------------------------------------------------------
 var functionAppName = toLower('${orgPrefix}-${appPrefix}-func-${environmentCode}${appSuffix}')
-var functionAppSvcName = '${functionAppName}-appsvc'
-var functionInsightsName = '${functionAppName}-insights'
+var appServicePlanName = toLower('${functionAppName}-appsvc')
+var functionInsightsName = toLower('${functionAppName}-insights')
 
 var keyVaultName = '${orgPrefix}${appPrefix}vault${environmentCode}${appSuffix}'
 var cosmosConnectionStringReference = '@Microsoft.KeyVault(VaultName=${keyVaultName};SecretName=cosmosConnectionString)'
@@ -42,7 +42,7 @@ resource appInsightsResource 'Microsoft.Insights/components@2020-02-02-preview' 
     kind: 'web'
     tags: {
       LastDeployed: runDateTime
-      templateFileName: templateFileName
+      TemplateFile:templateFileName
     }
   properties: {
         Application_Type: 'web'
@@ -52,13 +52,13 @@ resource appInsightsResource 'Microsoft.Insights/components@2020-02-02-preview' 
     }
 }
 
-resource appServiceResource 'Microsoft.Web/serverFarms@2019-08-01' = {
-    name: functionAppSvcName
+resource appServiceResource 'Microsoft.Web/serverfarms@2021-03-01' = {
+    name: appServicePlanName
     location: location
     kind: 'functionapp'
     tags: {
       LastDeployed: runDateTime
-      templateFileName: templateFileName
+      TemplateFile: templateFileName
       SKU: functionAppSku
     }
     sku: {
@@ -80,13 +80,13 @@ resource appServiceResource 'Microsoft.Web/serverFarms@2019-08-01' = {
     }
 }
 
-resource functionAppResource 'Microsoft.Web/sites@2018-11-01' = {
+resource functionAppResource 'Microsoft.Web/sites@2021-03-01' = {
     name: functionAppName
     location: location
     kind: 'functionapp,linux'
     tags: {
       LastDeployed: runDateTime
-      templateFileName: templateFileName
+      TemplateFile: templateFileName
       SKU: functionAppSku
     }
     identity: {
@@ -126,7 +126,7 @@ resource functionAppResource 'Microsoft.Web/sites@2018-11-01' = {
                 }
                 {
                     name: 'APPINSIGHTS_INSTRUMENTATIONKEY'
-                    value: '${reference(appInsightsResource.id, '2018-05-01-preview').InstrumentationKey}'
+                    value: appInsightsResource.properties.InstrumentationKey
                 }
                 {
                     name: 'APPLICATIONINSIGHTS_CONNECTION_STRING'

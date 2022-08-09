@@ -13,7 +13,7 @@ param environmentCode string = 'dev'
 param appSuffix string = '1'
 param location string = resourceGroup().location
 param runDateTime string = utcNow()
-param templateFileName string = '~function.bicep'
+param templateFileName string = '~cosmosDatabase.bicep'
 param containerArray array
 
 // --------------------------------------------------------------------------------
@@ -26,7 +26,7 @@ resource cosmosAccountResource 'Microsoft.DocumentDB/databaseAccounts@2022-05-15
     location: location
     tags: {
         LastDeployed: runDateTime
-        templateFileName: templateFileName
+        TemplateFile: templateFileName
         defaultExperience: 'Core (SQL)'
         CosmosAccountType: 'Non-Production'
     }
@@ -62,8 +62,7 @@ resource cosmosAccountResource 'Microsoft.DocumentDB/databaseAccounts@2022-05-15
                 name: 'EnableServerless'
             }
         ]
-        ipRules: [            
-        ]
+    ipRules: []
         backupPolicy: {
             type: 'Periodic'
             periodicModeProperties: {

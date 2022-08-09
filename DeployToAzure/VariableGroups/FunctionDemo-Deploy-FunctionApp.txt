@@ -1,0 +1,4 @@
+functionAppNameDev  lll-funcdemo-func-dev
+functionAppNameQA   lll-funcdemo-func-qa
+subscriptionNameDev Lyles Azure Sandbox
+subscriptionNameQA  Lyles Azure Sandbox

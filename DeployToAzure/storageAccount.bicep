@@ -24,7 +24,7 @@ resource storageAccountResource 'Microsoft.Storage/storageAccounts@2019-06-01' =
     }
     tags: {
         LastDeployed: runDateTime
-        templateFileName: templateFileName
+        TemplateFile: templateFileName
         SKU: storageSku
       }
     kind: 'Storage'

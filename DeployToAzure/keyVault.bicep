@@ -1,5 +1,5 @@
 // --------------------------------------------------------------------------------
-// This BICEP file will create a KeyVault for the Azure Function Example Project
+// This BICEP file will create a KeyVault
 // --------------------------------------------------------------------------------
 param orgPrefix string = 'org'
 param appPrefix string = 'app'
