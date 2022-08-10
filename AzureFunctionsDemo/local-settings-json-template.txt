@@ -1,0 +1,18 @@
+﻿You will need to populate these in the local.settings.json file in your project.
+{
+	"IsEncrypted": false,
+	"Values": {
+		"AzureWebJobsStorage": "UseDevelopmentStorage=true",
+		"FUNCTIONS_WORKER_RUNTIME": "dotnet",
+		"serviceBusSendConnectionString": "Endpoint=sb://xxx-svcbus-dev.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=xxx",
+		"serviceBusReceiveConnectionString": "Endpoint=sb://xxx-svcbus-dev.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=xxx"
+
+		"cosmosConnectionString": "AccountEndpoint=https://xxx-funcdemo-cosmos-acctdev.documents.azure.com:443/;AccountKey=xxx",
+		"cosmosDatabaseName": "lll-funcdemo-cosmos-dbdev",
+		"cosmosContainerName": "products",
+		"ordersContainerName": "orders",
+
+		"orderReceivedQueue": "orders-received",
+		"ordersToErpQueue": "orders-to-erp"
+	}
+}

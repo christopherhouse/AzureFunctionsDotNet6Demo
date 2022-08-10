@@ -7,16 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AzureFunctionsDemo", "Azure
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AzureDeploy", "AzureDeploy", "{563D9712-F53B-4BC4-BEF8-709075BC5BD8}"
 	ProjectSection(SolutionItems) = preProject
-		DeployToAzure\cosmos.bicep = DeployToAzure\cosmos.bicep
-		DeployToAzure\Deploy-Bicep.yml = DeployToAzure\Deploy-Bicep.yml
 		DeployToAzure\Deploy-FunctionApp.yml = DeployToAzure\Deploy-FunctionApp.yml
-		DeployToAzure\Deploy-Infrastructure.yml = DeployToAzure\Deploy-Infrastructure.yml
-		DeployToAzure\function.bicep = DeployToAzure\function.bicep
-		DeployToAzure\keyvault.bicep = DeployToAzure\keyvault.bicep
-		DeployToAzure\main.bicep = DeployToAzure\main.bicep
-		DeployToAzure\servicebus.bicep = DeployToAzure\servicebus.bicep
-		DeployToAzure\storage.bicep = DeployToAzure\storage.bicep
-		DeployToAzure\StartStopServices.ps1 = DeployToAzure\StartStopServices.ps1 
+		DeployToAzure\functionApp.bicep = DeployToAzure\functionApp.bicep
 	EndProjectSection
 EndProject
 Global
