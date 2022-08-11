@@ -16,7 +16,7 @@ jobs:
     variables:
       - group: ${{ parameters.variableGroupName }}
     steps:
-    #- script: az bicep build --file DeployToAzure/main.bicep --outfile DeployToAzure/main.json
+    #- script: az bicep build --file DeployToAzure/Bicep/main.bicep --outfile DeployToAzure/Bicep/main.json
     #  displayName: 'Compile main Bicep file to ARM'
     - task: AzureResourceManagerTemplateDeployment@3
       displayName: 'Deploy ARM Templates'
@@ -28,7 +28,7 @@ jobs:
         resourceGroupName: '$(resourceGroupName)'
         location: '$(location)'
         templateLocation: 'Linked artifact'
-        csmFile: 'DeployToAzure/main.bicep'
+        csmFile: 'DeployToAzure/Bicep/main.bicep'
         overrideParameters: '-environmentCode $(environmentCode) -location $(location) -orgPrefix $(orgPrefix) -appPrefix $(appPrefix) -appSuffix $(appSuffix) -storageSku $(storageSku) -functionAppSku $(functionAppSku) -functionAppSkuFamily $(functionAppSkuFamily) -functionAppSkuTier $(functionAppSkuTier) -runDateTime ${{parameters.runDateTime}}'
         deploymentMode: 'Incremental'
         continueOnError: ignoreError
