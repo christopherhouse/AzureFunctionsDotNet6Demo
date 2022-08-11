@@ -1,11 +1,11 @@
 # ------------------------------------------------------------------------------------------------------------------------
 # Build for IoT Function App Processor for the Azure Function Example Project
 # ------------------------------------------------------------------------------------------------------------------------
-# Create a variable group for each environment with these variables:
+# Create ONE variable group with these variables - a set for each environment :
 #   subscriptionNameDev: '<ServiceConnectionName / Subscription Name>'
-#   functionAppNameDev: 'lll-funcdemo-func-dev-1'
+#   functionAppNameDev: 'lll-funcdemo-func-dev'
 #   subscriptionNameQA: '<ServiceConnectionName / Subscription Name>'
-#   functionAppNameQA: 'lll-funcdemo-func-qa-1'
+#   functionAppNameQA: 'lll-funcdemo-func-qa'
 # ------------------------------------------------------------------------------------------------------------------------
 name: $(date:yyyy).$(date:MM).$(date:dd)$(rev:.r)
 pool:
