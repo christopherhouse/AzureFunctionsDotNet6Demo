@@ -104,7 +104,8 @@ module keyVaultModule 'keyVault.bicep' = {
   params: {
     adminUserObjectIds: adminUserIds
     applicationUserObjectIds: applicationUserIds
-    
+    keyVaultName: keyVaultName
+
     templateFileName: '~keyVault.bicep'
     orgPrefix: orgPrefix
     appPrefix: appPrefix
