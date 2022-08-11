@@ -1,12 +1,13 @@
+orgPrefix lll
 appPrefix   funcdemo
-appSuffix
 environmentCode dev
+appSuffix   
 environmentUpper  DEV
+
 functionAppSku  Y1
 functionAppSkuFamily  Y
 functionAppSkuTier  Dynamic
 location  eastus
-orgPrefix lll
 resourceGroupName rg_functiondemo_dev
 storageSku  Standard_LRS
 subscriptionId  xxx-xxx-xxx-xxx

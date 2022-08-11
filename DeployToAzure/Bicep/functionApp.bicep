@@ -16,7 +16,8 @@ param functionAppSkuTier string = 'Dynamic'
 param functionStorageAccountName string
 
 // configuration keys unique to this solution...
-param cosmosDatabaseName string = 'cmh-cosmos-demo-db'
+param keyVaultName string = 'keyVaultName'
+param cosmosDatabaseName string = 'cosmos-demo-db'
 param productsContainerName string = 'products'
 param ordersContainerName string = 'orders'
 param orderReceivedQueue string = 'orders-received'
@@ -27,7 +28,6 @@ var functionAppName = toLower('${orgPrefix}-${appPrefix}-func-${environmentCode}
 var appServicePlanName = toLower('${functionAppName}-appsvc')
 var functionInsightsName = toLower('${functionAppName}-insights')
 
-var keyVaultName = '${orgPrefix}${appPrefix}vault${environmentCode}${appSuffix}'
 var cosmosConnectionStringReference = '@Microsoft.KeyVault(VaultName=${keyVaultName};SecretName=cosmosConnectionString)'
 var serviceBusReceiveConnectionStringReference = '@Microsoft.KeyVault(VaultName=${keyVaultName};SecretName=serviceBusReceiveConnectionString)'
 var serviceBusSendConnectionStringReference = '@Microsoft.KeyVault(VaultName=${keyVaultName};SecretName=serviceBusSendConnectionString)'

@@ -20,6 +20,7 @@ param runDateTime string = utcNow()
 
 // --------------------------------------------------------------------------------
 var deploymentSuffix = '-deploy-${runDateTime}'
+var keyVaultName = '${orgPrefix}${appPrefix}vault${environmentCode}${appSuffix}'
 
 // --------------------------------------------------------------------------------
 module storageModule 'storageAccount.bicep' = {
@@ -58,6 +59,7 @@ module functionModule 'functionApp.bicep' = {
     functionAppSkuFamily: functionAppSkuFamily
     functionAppSkuTier: functionAppSkuTier
     functionStorageAccountName: storageModule.outputs.functionStorageAccountName
+    keyVaultName: keyVaultName
 
     templateFileName: '~functionApp.bicep'
     orgPrefix: orgPrefix
@@ -90,19 +92,19 @@ module cosmosModule 'cosmosDatabase.bicep' = {
 }
 
 // Create a powershell step to put Owner Object Ids into variables:
-var owner1UserObjectId = 'd4aaf634-e777-4307-bb6e-7bf2305d166e' // Lyle's AD Guid
-var owner2UserObjectId = '209019b5-167b-45cd-ab9c-f987fa262040' // Chris's AD Guid
 //   > Connect-AzureAD
 //   > $owner1UserObjectId = (Get-AzureAdUser -ObjectId 'lyleluppes@microsoft.com').ObjectId
-
+var owner1UserObjectId = 'd4aaf634-e777-4307-bb6e-7bf2305d166e' // Lyle's AD Guid
+var owner2UserObjectId = '209019b5-167b-45cd-ab9c-f987fa262040' // Chris's AD Guid
+var adminUserIds = [ owner1UserObjectId, owner2UserObjectId ]
+var applicationUserIds = [ functionModule.outputs.functionAppPrincipalId ]
 module keyVaultModule 'keyVault.bicep' = {
   name: 'keyvault${deploymentSuffix}'
   dependsOn: [ storageModule, servicebusModule, functionModule, cosmosModule ]
   params: {
-    functionAppPrincipalId: functionModule.outputs.functionAppPrincipalId
-    owner1UserObjectId: owner1UserObjectId
-    owner2UserObjectId: owner2UserObjectId
-
+    adminUserObjectIds: adminUserIds
+    applicationUserObjectIds: applicationUserIds
+    
     templateFileName: '~keyVault.bicep'
     orgPrefix: orgPrefix
     appPrefix: appPrefix
@@ -116,7 +118,7 @@ module keyVaultSecretsModule 'keyVaultSecrets.bicep' = {
   name: 'keyvaultSecrets${deploymentSuffix}'
   dependsOn: [ storageModule, servicebusModule, functionModule, cosmosModule, keyVaultModule ]
   params: {
-    keyVaultName: keyVaultModule.outputs.keyVaultName
+    keyVaultName: keyVaultName
     functionInsightsKey: functionModule.outputs.functionInsightsKey
     functionStorageAccountName: functionModule.outputs.functionStorageAccountName
     serviceBusName: servicebusModule.outputs.serviceBusName
