@@ -17,16 +17,18 @@ jobs:
       - group: ${{ parameters.variableGroupName }}
 
     steps:
-    - task: AzureResourceGroupDeployment@2
-      inputs:
-        action: 'Create Or Update Resource Group'
-        azureSubscription: $(subscriptionName)
-        resourceGroupName: $(resourceGroupName)
-        location: $(location)
-        deploymentMode: 'Incremental'
-        templateLocation: 'Linked artifact'
-        csmFile: 'DeployToAzure/Arm/resourceGroup.json'
-        overrideParameters: -rgName $(resourceGroupName) -rgLocation $(location)
+    # This is sooooo close, but I still can't get it to work right!
+    #   Latest error: No HTTP resource was found that matches the request URI 'https://management.azure.com/subscriptions/a0f86c93-146a-4534-b83e-49090394aa78/resourcegroups/rg_functiondemo_dev/providers/Microsoft.Resources/resourceGroups/rg_functiondemo_dev?api-version=2020-06-01'
+    # - task: AzureResourceGroupDeployment@2
+    #   inputs:
+    #     action: 'Create Or Update Resource Group'
+    #     azureSubscription: $(subscriptionName)
+    #     resourceGroupName: $(resourceGroupName)
+    #     location: $(location)
+    #     deploymentMode: 'Incremental'
+    #     templateLocation: 'Linked artifact'
+    #     csmFile: 'DeployToAzure/Arm/resourceGroup.json'
+    #     overrideParameters: -rgName $(resourceGroupName) -rgLocation $(location)
 
     #- script: az bicep build --file DeployToAzure/Bicep/main.bicep --outfile DeployToAzure/Bicep/main.json
     #  displayName: 'Compile main Bicep file to ARM'
