@@ -130,7 +130,7 @@ resource functionAppResource 'Microsoft.Web/sites@2021-03-01' = {
                 }
                 {
                     name: 'APPLICATIONINSIGHTS_CONNECTION_STRING'
-                    value: 'InstrumentationKey=${reference(appInsightsResource.id, '2018-05-01-preview').InstrumentationKey}'
+                    value: 'InstrumentationKey=${appInsightsResource.properties.InstrumentationKey}'
                 }
                 {
                     name: 'FUNCTIONS_WORKER_RUNTIME'

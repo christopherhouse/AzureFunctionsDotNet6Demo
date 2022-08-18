@@ -15,9 +15,20 @@ jobs:
     displayName: Deploy Environment
     variables:
       - group: ${{ parameters.variableGroupName }}
+      
     steps:
+    - name: Create Resource Group
+      uses: azure/CLI@v1
+      with:
+        inlineScript: >
+          echo "Creating Resource Group"
+          echo "Executing 'az group create -l $(location) -n $(resourceGroupName)'"
+
+          az group create -l $(location) -n $(resourceGroupName)
+
     #- script: az bicep build --file DeployToAzure/Bicep/main.bicep --outfile DeployToAzure/Bicep/main.json
     #  displayName: 'Compile main Bicep file to ARM'
+
     - task: AzureResourceManagerTemplateDeployment@3
       displayName: 'Deploy ARM Templates'
       inputs:
