@@ -25,6 +25,7 @@ jobs:
           echo "Creating Resource Group"
           echo "Executing 'az group create -l $(location) -n $(resourceGroupName)'"
 
+          az login
           az group create -l $(location) -n $(resourceGroupName)
 
       #- script: az bicep build --file DeployToAzure/Bicep/main.bicep --outfile DeployToAzure/Bicep/main.json
