@@ -31,7 +31,7 @@ jobs:
     #       az group create -l $(location) -n $(resourceGroupName)
     - task: AzureResourceGroupDeployment@2
       inputs:
-        action: create
+        action: 'Create Or Update Resource Group'
         azureSubscription: $(subscriptionName)
         resourceGroupName: $(resourceGroupName)
 
