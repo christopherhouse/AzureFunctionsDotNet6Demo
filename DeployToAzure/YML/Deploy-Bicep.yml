@@ -17,19 +17,26 @@ jobs:
       - group: ${{ parameters.variableGroupName }}
 
     steps:
-    - task: PowerShell@2
-      displayName: 'Create Resource Group'
+    # - task: PowerShell@2
+    #   displayName: 'Create Resource Group'
+    #   inputs:
+    #     targetType: 'inline'
+    #     script: |
+    #       echo "Creating Resource Group"
+    #       echo "Executing 'az group create -l $(location) -n $(resourceGroupName)'"
+          
+    #       # hangs without a userid/pw...
+    #       az login
+    #       # fails until you do a login
+    #       az group create -l $(location) -n $(resourceGroupName)
+    - task: AzureResourceGroupDeployment@2
       inputs:
-        targetType: 'inline'
-        script: |
-          echo "Creating Resource Group"
-          echo "Executing 'az group create -l $(location) -n $(resourceGroupName)'"
+        action: create
+        azureSubscription: $(subscriptionName)
+        resourceGroupName: $(resourceGroupName)
 
-          az login
-          az group create -l $(location) -n $(resourceGroupName)
-
-      #- script: az bicep build --file DeployToAzure/Bicep/main.bicep --outfile DeployToAzure/Bicep/main.json
-      #  displayName: 'Compile main Bicep file to ARM'
+    #- script: az bicep build --file DeployToAzure/Bicep/main.bicep --outfile DeployToAzure/Bicep/main.json
+    #  displayName: 'Compile main Bicep file to ARM'
 
     - task: AzureResourceManagerTemplateDeployment@3
       displayName: 'Deploy ARM Templates'
