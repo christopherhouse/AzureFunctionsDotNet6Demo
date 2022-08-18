@@ -21,8 +21,21 @@ param runDateTime string = utcNow()
 // --------------------------------------------------------------------------------
 var deploymentSuffix = '-deploy-${runDateTime}'
 var keyVaultName = '${orgPrefix}${appPrefix}vault${environmentCode}${appSuffix}'
-
 // --------------------------------------------------------------------------------
+
+// I'd love to do this here, but it keeps complaining about the Scope being incorrect...?
+// var resourceGroupName = 'rg_functiondemo_${environmentCode}'
+// var subscriptionID = 'xxx'
+// module resourceGroupModule 'resourceGroup.bicep' = {
+//   name: 'resourceGroup${deploymentSuffix}'
+//   scope: subscription(subscriptionID)
+//   params: {
+//     resourceGroupName: resourceGroupName
+//     location: location
+//     runDateTime: runDateTime
+//   }
+// }
+
 module storageModule 'storageAccount.bicep' = {
   name: 'storage${deploymentSuffix}'
   params: {

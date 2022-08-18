@@ -35,7 +35,11 @@ jobs:
         azureSubscription: $(subscriptionName)
         resourceGroupName: $(resourceGroupName)
         location: $(location)
-
+        deploymentMode: 'Incremental'
+        templateLocation: 'Linked artifact' # Options: linked Artifact, uRL Of The File
+        csmFile: 'DeployToAzure/Bicep/resourceGroup.bicep'    # Required when  TemplateLocation == Linked Artifact
+        overrideParameters: -resourceGroupName $(resourceGroupName) -location $(location)
+        
     #- script: az bicep build --file DeployToAzure/Bicep/main.bicep --outfile DeployToAzure/Bicep/main.json
     #  displayName: 'Compile main Bicep file to ARM'
 
