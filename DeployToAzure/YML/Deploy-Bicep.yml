@@ -17,18 +17,6 @@ jobs:
       - group: ${{ parameters.variableGroupName }}
 
     steps:
-    # - task: PowerShell@2
-    #   displayName: 'Create Resource Group'
-    #   inputs:
-    #     targetType: 'inline'
-    #     script: |
-    #       echo "Creating Resource Group"
-    #       echo "Executing 'az group create -l $(location) -n $(resourceGroupName)'"
-          
-    #       # hangs without a userid/pw...
-    #       az login
-    #       # fails until you do a login
-    #       az group create -l $(location) -n $(resourceGroupName)
     - task: AzureResourceGroupDeployment@2
       inputs:
         action: 'Create Or Update Resource Group'
@@ -36,10 +24,10 @@ jobs:
         resourceGroupName: $(resourceGroupName)
         location: $(location)
         deploymentMode: 'Incremental'
-        templateLocation: 'Linked artifact' # Options: linked Artifact, uRL Of The File
-        csmFile: 'DeployToAzure/Bicep/resourceGroup.bicep'    # Required when  TemplateLocation == Linked Artifact
-        overrideParameters: -resourceGroupName $(resourceGroupName) -location $(location)
-        
+        templateLocation: 'Linked artifact'
+        csmFile: 'DeployToAzure/Arm/resourceGroup.json'
+        overrideParameters: -rgName $(resourceGroupName) -rgLocation $(location)
+
     #- script: az bicep build --file DeployToAzure/Bicep/main.bicep --outfile DeployToAzure/Bicep/main.json
     #  displayName: 'Compile main Bicep file to ARM'
 
