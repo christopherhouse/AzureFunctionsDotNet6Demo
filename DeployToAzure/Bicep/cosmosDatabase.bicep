@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------
-// This BICEP file will create a Cosmos Database for the Azure Function Example Project
+// This BICEP file will create a Cosmos Database
 // This expects a parameter with a list of containers/keys, something like this:
 //   var cosmosContainerArray = [
 //     { name: 'products', partitionKey: '/category' }
@@ -15,10 +15,10 @@ param location string = resourceGroup().location
 param runDateTime string = utcNow()
 param templateFileName string = '~cosmosDatabase.bicep'
 param containerArray array
+param cosmosDatabaseName string = 'MyDatabase'
 
 // --------------------------------------------------------------------------------
-var cosmosAccountName = '${orgPrefix}-${appPrefix}-cosmos-acct${environmentCode}${appSuffix}'
-var cosmosDatabaseName = '${orgPrefix}-${appPrefix}-cosmos-db${environmentCode}${appSuffix}'
+var cosmosAccountName = '${orgPrefix}-${appPrefix}-cosmos-${environmentCode}${appSuffix}'
 
 // --------------------------------------------------------------------------------
 resource cosmosAccountResource 'Microsoft.DocumentDB/databaseAccounts@2022-05-15' = {
@@ -52,6 +52,7 @@ resource cosmosAccountResource 'Microsoft.DocumentDB/databaseAccounts@2022-05-15
         enableAnalyticalStorage: false
         createMode: 'Default'
         databaseAccountOfferType: 'Standard'
+    defaultIdentity: 'FirstPartyIdentity'
         consistencyPolicy: {
             defaultConsistencyLevel: 'Session'
             maxIntervalInSeconds: 5
@@ -70,6 +71,10 @@ resource cosmosAccountResource 'Microsoft.DocumentDB/databaseAccounts@2022-05-15
                 backupRetentionIntervalInHours: 8
             }
         }
+    networkAclBypassResourceIds: []
+    capacity: {
+      totalThroughputLimit: 4000
+    }
     }
 }
 
@@ -119,4 +124,5 @@ resource containerResources 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/
     }
 }]
 
+// --------------------------------------------------------------------------------
 output cosmosAccountName string = cosmosAccountName

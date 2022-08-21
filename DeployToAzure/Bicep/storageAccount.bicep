@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------
-// This BICEP file will create storage for the Azure Function Example Project
+// This BICEP file will create storage account
 // --------------------------------------------------------------------------------
 param orgPrefix string = 'org'
 param appPrefix string = 'app'
@@ -10,6 +10,7 @@ param location string = resourceGroup().location
 param runDateTime string = utcNow()
 param templateFileName string = '~storageAccount.bicep'
 
+@allowed([ 'Standard_LRS', 'Standard_GRS', 'Standard_RAGRS' ])
 param storageSku string = 'Standard_LRS'
 
 // --------------------------------------------------------------------------------

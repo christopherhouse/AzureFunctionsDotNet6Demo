@@ -1,5 +1,5 @@
 # ------------------------------------------------------------------------------------------------------------------------
-# Pipeline to deploy Azure Resources for All Environments for the Azure Function Example Project
+# Pipeline to deploy Azure Resources for All Environments
 # ------------------------------------------------------------------------------------------------------------------------
 # Create a variable group for EACH environment with these variables:
 #   environmentCode: 'dev/qa/prod'

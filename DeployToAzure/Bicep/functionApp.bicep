@@ -1,6 +1,8 @@
 ﻿// ----------------------------------------------------------------------------------------------------
-// This BICEP file will create an Azure Function for the Azure Function Example Project
-// TODO: can I split the unique configuration keys out into a separate file to make this more generic?
+// This BICEP file will create an Azure Function
+// ----------------------------------------------------------------------------------------------------
+// To deploy this Bicep manually:
+//   az deployment group create -n main-deploy-20220819T164900Z --resource-group rg_iotdemo_dev --template-file 'functionApp.bicep' --parameters orgPrefix=xxx environmentCode=dev appPrefix=iotdemo functionKind=functionapp functionStorageAccountName=xxxiotdemofuncdevstore
 // ----------------------------------------------------------------------------------------------------
 param orgPrefix string = 'org'
 param appPrefix string = 'app'
@@ -8,29 +10,22 @@ param appPrefix string = 'app'
 param environmentCode string = 'dev'
 param appSuffix string = '1'
 param location string = resourceGroup().location
+param appInsightsLocation string = resourceGroup().location
 param runDateTime string = utcNow()
 param templateFileName string = '~functionApp.bicep'
+
+param functionName string = 'func'
+@allowed([ 'functionapp', 'functionapp,linux' ])
+param functionKind string
 param functionAppSku string = 'Y1'
 param functionAppSkuFamily string = 'Y'
 param functionAppSkuTier string = 'Dynamic'
 param functionStorageAccountName string
 
-// configuration keys unique to this solution...
-param keyVaultName string = 'keyVaultName'
-param cosmosDatabaseName string = 'cosmos-demo-db'
-param productsContainerName string = 'products'
-param ordersContainerName string = 'orders'
-param orderReceivedQueue string = 'orders-received'
-param ordersToErpQueue string = 'orders-to-erp'
-
 // --------------------------------------------------------------------------------
-var functionAppName = toLower('${orgPrefix}-${appPrefix}-func-${environmentCode}${appSuffix}')
+var functionAppName = toLower('${orgPrefix}-${appPrefix}-${functionName}-${environmentCode}${appSuffix}')
 var appServicePlanName = toLower('${functionAppName}-appsvc')
 var functionInsightsName = toLower('${functionAppName}-insights')
-
-var cosmosConnectionStringReference = '@Microsoft.KeyVault(VaultName=${keyVaultName};SecretName=cosmosConnectionString)'
-var serviceBusReceiveConnectionStringReference = '@Microsoft.KeyVault(VaultName=${keyVaultName};SecretName=serviceBusReceiveConnectionString)'
-var serviceBusSendConnectionStringReference = '@Microsoft.KeyVault(VaultName=${keyVaultName};SecretName=serviceBusSendConnectionString)'
 
 // --------------------------------------------------------------------------------
 resource storageAccountResource 'Microsoft.Storage/storageAccounts@2019-06-01' existing = { name: functionStorageAccountName }
@@ -38,24 +33,25 @@ var functionStorageAccountConnectionString = 'DefaultEndpointsProtocol=https;Acc
 
 resource appInsightsResource 'Microsoft.Insights/components@2020-02-02-preview' = {
     name: functionInsightsName
-    location: location
+  location: appInsightsLocation
     kind: 'web'
     tags: {
       LastDeployed: runDateTime
       TemplateFile:templateFileName
     }
   properties: {
-        Application_Type: 'web'
-        //RetentionInDays: 90
-        publicNetworkAccessForIngestion: 'Enabled'
-        publicNetworkAccessForQuery: 'Enabled'
-    }
+    Application_Type: 'web'
+    Request_Source: 'rest'
+    //RetentionInDays: 90
+    publicNetworkAccessForIngestion: 'Enabled'
+    publicNetworkAccessForQuery: 'Enabled'
+  }
 }
 
 resource appServiceResource 'Microsoft.Web/serverfarms@2021-03-01' = {
     name: appServicePlanName
     location: location
-    kind: 'functionapp'
+  kind: functionKind
     tags: {
       LastDeployed: runDateTime
       TemplateFile: templateFileName
@@ -72,7 +68,7 @@ resource appServiceResource 'Microsoft.Web/serverfarms@2021-03-01' = {
         perSiteScaling: false
         maximumElasticWorkerCount: 1
         isSpot: false
-        reserved: true
+    reserved: false
         isXenon: false
         hyperV: false
         targetWorkerCount: 0
@@ -83,7 +79,7 @@ resource appServiceResource 'Microsoft.Web/serverfarms@2021-03-01' = {
 resource functionAppResource 'Microsoft.Web/sites@2021-03-01' = {
     name: functionAppName
     location: location
-    kind: 'functionapp,linux'
+    kind: functionKind
     tags: {
       LastDeployed: runDateTime
       TemplateFile: templateFileName
@@ -94,18 +90,6 @@ resource functionAppResource 'Microsoft.Web/sites@2021-03-01' = {
     }
     properties: {
         enabled: true
-        hostNameSslStates: [
-            {
-                name: '${functionAppName}.azurewebsites.net'
-                sslState: 'Disabled'
-                hostType: 'Standard'
-            }
-            {
-                name: '${functionAppName}.scm.azurewebsites.net'
-                sslState: 'Disabled'
-                hostType: 'Repository'
-            }
-        ]
         serverFarmId: appServiceResource.id
         reserved: false
         isXenon: false
@@ -140,39 +124,9 @@ resource functionAppResource 'Microsoft.Web/sites@2021-03-01' = {
                     name: 'FUNCTIONS_EXTENSION_VERSION'
                     value: '~4'
                 }
-                {
-                    name: 'cosmosDatabaseName'
-                    value: cosmosDatabaseName
-                }
-                {
-                    name: 'cosmosContainerName'
-                    value: productsContainerName
-                }
-                {
-                    name: 'ordersContainerName'
-                    value: ordersContainerName
-                }
-                {
-                    name: 'orderReceivedQueue'
-                    value: orderReceivedQueue
-                }
-                {
-                    name: 'ordersToErpQueue'
-                    value: ordersToErpQueue
-                }
-                {
-                    name: 'cosmosConnectionString'
-                    value: cosmosConnectionStringReference
-                }
-                {
-                    name: 'serviceBusReceiveConnectionString'
-                    value: serviceBusReceiveConnectionStringReference
-                }
-                {
-                    name: 'serviceBusSendConnectionString'
-                    value: serviceBusSendConnectionStringReference
-                }        
               ]            
+          ftpsState: 'FtpsOnly'
+          minTlsVersion: '1.2'
         }
         scmSiteAlsoStopped: false
         clientAffinityEnabled: false
@@ -200,7 +154,7 @@ resource functionAppConfig 'Microsoft.Web/sites/config@2018-11-01' = {
             'hostingstart.html'
         ]
         netFrameworkVersion: 'v4.0'
-        linuxFxVersion: 'dotnet|3.1'
+        linuxFxVersion: 'dotnet|6.0'
         requestTracingEnabled: false
         remoteDebuggingEnabled: false
         httpLoggingEnabled: false
@@ -271,6 +225,7 @@ resource functionAppBinding 'Microsoft.Web/sites/hostNameBindings@2018-11-01' = 
 }
 
 output functionAppPrincipalId string = functionAppResource.identity.principalId
+output functionAppId string = functionAppResource.id
 output functionAppName string = functionAppName
 output functionInsightsName string = functionInsightsName
 output functionInsightsKey string = appInsightsResource.properties.InstrumentationKey

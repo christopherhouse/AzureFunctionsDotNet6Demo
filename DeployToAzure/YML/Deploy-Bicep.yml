@@ -1,5 +1,5 @@
 ﻿# ----------------------------------------------------------------------------------------------------
-# Pipeline to deploy all Azure Resources for one environment for the Azure Function Example Project
+# Pipeline to deploy all Azure Resources for one environment
 # ----------------------------------------------------------------------------------------------------
 parameters:
   variableGroupName: 'myVariableGroup'

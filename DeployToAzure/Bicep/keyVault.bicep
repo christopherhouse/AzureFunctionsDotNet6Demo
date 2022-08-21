@@ -1,5 +1,6 @@
 // --------------------------------------------------------------------------------
 // This BICEP file will create a KeyVault
+// To purse a KV with soft delete enabled: > az keyvault purge --name keyvaultname
 // --------------------------------------------------------------------------------
 param orgPrefix string = 'org'
 param appPrefix string = 'app'

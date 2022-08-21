@@ -1,5 +1,5 @@
 # ------------------------------------------------------------------------------------------------------------------------
-# Build for IoT Function App Processor for the Azure Function Example Project
+# Build for IoT Function App Processor
 # ------------------------------------------------------------------------------------------------------------------------
 # Create ONE variable group with these variables - a set for each environment :
 #   subscriptionNameDev: '<ServiceConnectionName / Subscription Name>'
