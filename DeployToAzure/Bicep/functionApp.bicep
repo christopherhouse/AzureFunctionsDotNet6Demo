@@ -154,7 +154,6 @@ resource functionAppConfig 'Microsoft.Web/sites/config@2018-11-01' = {
             'hostingstart.html'
         ]
         netFrameworkVersion: 'v4.0'
-        linuxFxVersion: 'dotnet|6.0'
         requestTracingEnabled: false
         remoteDebuggingEnabled: false
         httpLoggingEnabled: false
