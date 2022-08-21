@@ -138,90 +138,91 @@ resource functionAppResource 'Microsoft.Web/sites@2021-03-01' = {
     }
 }
 
-resource functionAppConfig 'Microsoft.Web/sites/config@2018-11-01' = {
-    name: '${functionAppResource.name}/web'
-    properties: {
-        numberOfWorkers: -1
-        defaultDocuments: [
-            'Default.htm'
-            'Default.html'
-            'Default.asp'
-            'index.htm'
-            'index.html'
-            'iisstart.htm'
-            'default.aspx'
-            'index.php'
-            'hostingstart.html'
-        ]
-        netFrameworkVersion: 'v4.0'
-        requestTracingEnabled: false
-        remoteDebuggingEnabled: false
-        httpLoggingEnabled: false
-        logsDirectorySizeLimit: 35
-        detailedErrorLoggingEnabled: false
-        publishingUsername: '$${functionAppName}'
-        azureStorageAccounts: {            
-        }
-        scmType: 'None'
-        use32BitWorkerProcess: false
-        webSocketsEnabled: false
-        alwaysOn: false
-        managedPipelineMode: 'Integrated'
-        virtualApplications: [
-            {
-                virtualPath: '/'
-                physicalPath: 'site\\wwwroot'
-                preloadEnabled: true
-            }
-        ]
-        loadBalancing: 'LeastRequests'
-        experiments: {
-            rampUpRules: [                
-            ]
-        }
-        autoHealEnabled: false
-        cors: {
-            allowedOrigins: [
-                'https://functions.azure.com'
-                'https://functions-staging.azure.com'
-                'https://functions-next.azure.com'
-            ]
-            supportCredentials: false
-        }
-        localMySqlEnabled: false
-        ipSecuriyRestrictions: [
-            {
-                ipAddress: 'Any'
-                action: 'Allow'
-                priority: 1
-                name: 'Allow all'
-                description: 'Wide open to the world :)'
-            }
-        ]
-        scmIpSecurityRestrictions: [
-            {
-                ipAddress: 'Any'
-                action: 'Allow'
-                priority: 1
-                name: 'Allow all'
-                description: 'Wide open to the world :)'
-            }            
-        ]
-        scmIpSecurityRestrictionsUseMain: false
-        http20Enabled: true
-        minTlsVersion: '1.2'
-        ftpsState: 'AllAllowed'
-        reservedInstanceCount: 0
-    }
-}
+// resource functionAppConfig 'Microsoft.Web/sites/config@2018-11-01' = {
+//     name: '${functionAppResource.name}/web'
+//     properties: {
+//         numberOfWorkers: -1
+//         defaultDocuments: [
+//             'Default.htm'
+//             'Default.html'
+//             'Default.asp'
+//             'index.htm'
+//             'index.html'
+//             'iisstart.htm'
+//             'default.aspx'
+//             'index.php'
+//             'hostingstart.html'
+//         ]
+//         netFrameworkVersion: 'v4.0'
+//         linuxFxVersion: 'dotnet|6.0'
+//         requestTracingEnabled: false
+//         remoteDebuggingEnabled: false
+//         httpLoggingEnabled: false
+//         logsDirectorySizeLimit: 35
+//         detailedErrorLoggingEnabled: false
+//         publishingUsername: '$${functionAppName}'
+//         azureStorageAccounts: {            
+//         }
+//         scmType: 'None'
+//         use32BitWorkerProcess: false
+//         webSocketsEnabled: false
+//         alwaysOn: false
+//         managedPipelineMode: 'Integrated'
+//         virtualApplications: [
+//             {
+//                 virtualPath: '/'
+//                 physicalPath: 'site\\wwwroot'
+//                 preloadEnabled: true
+//             }
+//         ]
+//         loadBalancing: 'LeastRequests'
+//         experiments: {
+//             rampUpRules: [                
+//             ]
+//         }
+//         autoHealEnabled: false
+//         cors: {
+//             allowedOrigins: [
+//                 'https://functions.azure.com'
+//                 'https://functions-staging.azure.com'
+//                 'https://functions-next.azure.com'
+//             ]
+//             supportCredentials: false
+//         }
+//         localMySqlEnabled: false
+//         ipSecurityRestrictions: [
+//             {
+//                 ipAddress: 'Any'
+//                 action: 'Allow'
+//                 priority: 1
+//                 name: 'Allow all'
+//                 description: 'Wide open to the world :)'
+//             }
+//         ]
+//         scmIpSecurityRestrictions: [
+//             {
+//                 ipAddress: 'Any'
+//                 action: 'Allow'
+//                 priority: 1
+//                 name: 'Allow all'
+//                 description: 'Wide open to the world :)'
+//             }            
+//         ]
+//         scmIpSecurityRestrictionsUseMain: false
+//         http20Enabled: true
+//         minTlsVersion: '1.2'
+//         ftpsState: 'AllAllowed'
+//         reservedInstanceCount: 0
+//     }
+// }
 
-resource functionAppBinding 'Microsoft.Web/sites/hostNameBindings@2018-11-01' = {
-    name: '${functionAppResource.name}/${functionAppResource.name}.azurewebsites.net'
-    properties: {
-        siteName: functionAppName
-        hostNameType: 'Verified'
-    }
-}
+// resource functionAppBinding 'Microsoft.Web/sites/hostNameBindings@2018-11-01' = {
+//     name: '${functionAppResource.name}/${functionAppResource.name}.azurewebsites.net'
+//     properties: {
+//         siteName: functionAppName
+//         hostNameType: 'Verified'
+//     }
+// }
 
 output functionAppPrincipalId string = functionAppResource.identity.principalId
 output functionAppId string = functionAppResource.id
