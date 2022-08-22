@@ -128,9 +128,9 @@ module keyVaultModule 'keyVault.bicep' = {
   dependsOn: [ functionModule ]
   params: {
     adminUserObjectIds: [  ]
-    applicationUserObjectIds: [ ]
+    // applicationUserObjectIds: [ ]
     // adminUserObjectIds: [ keyVaultOwnerUserId1, keyVaultOwnerUserId2 ]
-    // applicationUserObjectIds: [ functionModule.outputs.functionAppPrincipalId ]
+    applicationUserObjectIds: [ functionModule.outputs.functionAppPrincipalId ]
 
     templateFileName: '~keyVault.bicep'
     orgPrefix: orgPrefix
