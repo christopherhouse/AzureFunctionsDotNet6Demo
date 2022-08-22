@@ -11,8 +11,8 @@ param location string = resourceGroup().location
 param runDateTime string = utcNow()
 param templateFileName string = '~keyVault.bicep'
 
-param adminUserObjectIds array
-param applicationUserObjectIds array
+param adminUserObjectIds array = []
+param applicationUserObjectIds array = []
 
 // --------------------------------------------------------------------------------
 var keyVaultName = '${orgPrefix}${appPrefix}vault${environmentCode}${appSuffix}'

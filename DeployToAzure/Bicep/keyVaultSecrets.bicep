@@ -1,5 +1,16 @@
 // --------------------------------------------------------------------------------
 // This BICEP file will create KeyVault secrets specific to this project
+// module keyVaultSecretsModule 'keyVaultSecrets.bicep' = {
+//   name: 'keyvaultSecrets${deploymentSuffix}'
+//   dependsOn: [ keyVaultModule ]
+//   params: {
+//     keyVaultName: keyVaultModule.outputs.keyVaultName
+//     functionInsightsKey: functionModule.outputs.functionInsightsKey
+//     functionStorageAccountName: functionModule.outputs.functionStorageAccountName
+//     serviceBusName: servicebusModule.outputs.serviceBusName
+//     cosmosAccountName: cosmosModule.outputs.cosmosAccountName
+//   }
+// }
 // --------------------------------------------------------------------------------
 param keyVaultName string
 
