@@ -1,6 +1,6 @@
 // --------------------------------------------------------------------------------
 // This BICEP file will create a KeyVault
-// To purse a KV with soft delete enabled: > az keyvault purge --name keyvaultname
+// FYI: To purge a KV with soft delete enabled: > az keyvault purge --name kvName
 // --------------------------------------------------------------------------------
 param orgPrefix string = 'org'
 param appPrefix string = 'app'
@@ -10,12 +10,13 @@ param appSuffix string = '1'
 param location string = resourceGroup().location
 param runDateTime string = utcNow()
 param templateFileName string = '~keyVault.bicep'
-param keyVaultName string = 'kvName'
 
 param adminUserObjectIds array
 param applicationUserObjectIds array
 
 // --------------------------------------------------------------------------------
+var keyVaultName = '${orgPrefix}${appPrefix}vault${environmentCode}${appSuffix}'
+
 var adminAccessPolicies = [for adminUser in adminUserObjectIds: {
   objectId: adminUser
   tenantId: subscription().tenantId
@@ -61,3 +62,5 @@ resource keyvaultResource 'Microsoft.KeyVault/vaults@2021-11-01-preview' = {
     createMode: 'default'                // Creating or updating the key vault (not recovering)
   }
 }
+
+output keyVaultName string = keyvaultResource.name

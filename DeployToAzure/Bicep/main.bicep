@@ -21,8 +21,7 @@ param keyVaultOwnerUserId2 string = ''
 param runDateTime string = utcNow()
 
 // --------------------------------------------------------------------------------
-var deploymentSuffix = '-deploy-${runDateTime}'
-var keyVaultName = '${orgPrefix}${appPrefix}vault${environmentCode}${appSuffix}'
+var deploymentSuffix = '-${runDateTime}'
 
 // --------------------------------------------------------------------------------
 // TODO: I need a way to create a resource group here, but these don't work yet...!
@@ -132,7 +131,6 @@ module keyVaultModule 'keyVault.bicep' = {
   params: {
     adminUserObjectIds: adminUserIds
     applicationUserObjectIds: applicationUserIds
-    keyVaultName: keyVaultName
 
     templateFileName: '~keyVault.bicep'
     orgPrefix: orgPrefix
@@ -147,7 +145,7 @@ module keyVaultSecretsModule 'keyVaultSecrets.bicep' = {
   name: 'keyvaultSecrets${deploymentSuffix}'
   dependsOn: [ keyVaultModule ]
   params: {
-    keyVaultName: keyVaultName
+    keyVaultName: keyVaultModule.outputs.keyVaultName
     functionInsightsKey: functionModule.outputs.functionInsightsKey
     functionStorageAccountName: functionModule.outputs.functionStorageAccountName
     serviceBusName: servicebusModule.outputs.serviceBusName
@@ -163,9 +161,9 @@ module functionAppSettingsModule './functionAppSettings.bicep' = {
     functionStorageAccountName: functionModule.outputs.functionStorageAccountName
     functionInsightsKey: functionModule.outputs.functionInsightsKey
     customAppSettings: {
-      cosmosConnectionStringReference: '@Microsoft.KeyVault(VaultName=${keyVaultName};SecretName=cosmosConnectionString)'
-      serviceBusReceiveConnectionStringReference: '@Microsoft.KeyVault(VaultName=${keyVaultName};SecretName=serviceBusReceiveConnectionString)'
-      serviceBusSendConnectionStringReference: '@Microsoft.KeyVault(VaultName=${keyVaultName};SecretName=serviceBusSendConnectionString)'
+      cosmosConnectionStringReference: '@Microsoft.KeyVault(VaultName=${keyVaultModule.outputs.keyVaultName};SecretName=cosmosConnectionString)'
+      serviceBusReceiveConnectionStringReference: '@Microsoft.KeyVault(VaultName=${keyVaultModule.outputs.keyVaultName};SecretName=serviceBusReceiveConnectionString)'
+      serviceBusSendConnectionStringReference: '@Microsoft.KeyVault(VaultName=${keyVaultModule.outputs.keyVaultName};SecretName=serviceBusSendConnectionString)'
     }
   }
 }
