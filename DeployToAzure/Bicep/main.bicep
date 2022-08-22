@@ -123,14 +123,12 @@ module cosmosModule 'cosmosDatabase.bicep' = {
   }
 }
 
-var adminUserIds = [ keyVaultOwnerUserId1, keyVaultOwnerUserId2 ]
-var applicationUserIds = [ functionModule.outputs.functionAppPrincipalId ]
 module keyVaultModule 'keyVault.bicep' = {
   name: 'keyvault${deploymentSuffix}'
   dependsOn: [ functionModule ]
   params: {
-    adminUserObjectIds: adminUserIds
-    applicationUserObjectIds: applicationUserIds
+    adminUserObjectIds: [ keyVaultOwnerUserId1, keyVaultOwnerUserId2 ]
+    applicationUserObjectIds: [ functionModule.outputs.functionAppPrincipalId ]
 
     templateFileName: '~keyVault.bicep'
     orgPrefix: orgPrefix
