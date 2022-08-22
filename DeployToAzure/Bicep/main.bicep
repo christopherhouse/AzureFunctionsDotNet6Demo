@@ -103,7 +103,7 @@ module keyVaultModule 'keyVault.bicep' = {
   dependsOn: [ functionModule ]
   params: {
     //adminUserObjectIds: [ keyVaultOwnerUserId1, keyVaultOwnerUserId2 ]
-    adminUserObjectIds: [ ]
+    adminUserObjectIds: []
     applicationUserObjectIds: [ functionModule.outputs.functionAppPrincipalId ]
 
     templateFileName: '~keyVault.bicep'
@@ -122,21 +122,22 @@ module keyVaultSecret1 'keyVaultSecret.bicep' = {
   dependsOn: [ keyVaultModule, functionModule ]
   params: {
     keyVaultName: keyVaultName
-    secretName:  'functionAppInsightsKey'
+    secretName: 'functionAppInsightsKey'
     secretValue: functionModule.outputs.functionInsightsKey
   }
 }
 
-resource cosmosResource 'Microsoft.DocumentDB/databaseAccounts@2022-02-15-preview' existing = { name: cosmosModule.outputs.cosmosAccountName }
-var cosmosKey = '${listKeys(cosmosResource.id, cosmosResource.apiVersion).primaryMasterKey}'
-var cosmosConnectionString = 'AccountEndpoint=https://${cosmosModule.outputs.cosmosAccountName}.documents.azure.com:443/;AccountKey=${cosmosKey}'
+// resource cosmosResource 'Microsoft.DocumentDB/databaseAccounts@2022-02-15-preview' existing = { name: cosmosModule.outputs.cosmosAccountName }
+// var cosmosKey = '${listKeys(cosmosResource.id, cosmosResource.apiVersion).primaryMasterKey}'
+// var cosmosConnectionString = 'AccountEndpoint=https://${cosmosModule.outputs.cosmosAccountName}.documents.azure.com:443/;AccountKey=${cosmosKey}'
 module keyVaultSecret2 'keyVaultSecret.bicep' = {
   name: 'keyvaultSecret2${deploymentSuffix}'
   dependsOn: [ keyVaultModule, cosmosModule ]
   params: {
     keyVaultName: keyVaultName
     secretName: 'cosmosConnectionString'
-    secretValue: cosmosConnectionString
+    // secretValue: cosmosConnectionString
+    secretValue: 'AccountEndpoint=https://${cosmosModule.outputs.cosmosAccountName}.documents.azure.com:443/;AccountKey=XXXX'
   }
 }
 resource functionStorageAccountResource 'Microsoft.Storage/storageAccounts@2021-04-01' existing = { name: storageModule.name }
@@ -152,9 +153,9 @@ module keyVaultSecret3 'keyVaultSecret.bicep' = {
 }
 
 resource serviceBusResource 'Microsoft.ServiceBus/namespaces@2021-11-01' existing = { name: servicebusModule.name }
-var serviceBusEndpoint = '${serviceBusResource.id}/AuthorizationRules/RootManageSharedAccessKey' 
-var serviceBusSendConnectionString = 'Endpoint=sb://${serviceBusResource.name}.servicebus.windows.net/;SharedAccessKeyName=send;SharedAccessKey=${listKeys(serviceBusEndpoint, serviceBusResource.apiVersion).primaryKey}' 
-var serviceBusListenConnectionString = 'Endpoint=sb://${serviceBusResource.name}.servicebus.windows.net/;SharedAccessKeyName=listen;SharedAccessKey=${listKeys(serviceBusEndpoint, serviceBusResource.apiVersion).primaryKey}' 
+var serviceBusEndpoint = '${serviceBusResource.id}/AuthorizationRules/RootManageSharedAccessKey'
+var serviceBusSendConnectionString = 'Endpoint=sb://${serviceBusResource.name}.servicebus.windows.net/;SharedAccessKeyName=send;SharedAccessKey=${listKeys(serviceBusEndpoint, serviceBusResource.apiVersion).primaryKey}'
+var serviceBusListenConnectionString = 'Endpoint=sb://${serviceBusResource.name}.servicebus.windows.net/;SharedAccessKeyName=listen;SharedAccessKey=${listKeys(serviceBusEndpoint, serviceBusResource.apiVersion).primaryKey}'
 module keyVaultSecret4 'keyVaultSecret.bicep' = {
   name: 'keyvaultSecret4${deploymentSuffix}'
   dependsOn: [ keyVaultModule, servicebusModule ]
@@ -162,7 +163,7 @@ module keyVaultSecret4 'keyVaultSecret.bicep' = {
     keyVaultName: keyVaultName
     secretName: 'serviceBusReceiveConnectionString'
     secretValue: serviceBusListenConnectionString
-   }
+  }
 }
 module keyVaultSecret5 'keyVaultSecret.bicep' = {
   name: 'keyvaultSecret5${deploymentSuffix}'
@@ -170,7 +171,7 @@ module keyVaultSecret5 'keyVaultSecret.bicep' = {
   params: {
     keyVaultName: keyVaultName
     secretName: 'serviceBusSendConnectionString'
-    secretValue: serviceBusSendConnectionString 
+    secretValue: serviceBusSendConnectionString
   }
 }
 
