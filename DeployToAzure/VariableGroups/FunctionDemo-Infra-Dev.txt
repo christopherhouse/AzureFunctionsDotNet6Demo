@@ -1,14 +1,14 @@
-orgPrefix lll
-appPrefix   funcdemo
-environmentCode dev
+orgPrefix             <appPrefix>
+appPrefix             funcdemo
+environmentCode       dev
 appSuffix   
-environmentUpper  DEV
+environmentUpper      DEV
 
-functionAppSku  Y1
+functionAppSku        Y1
 functionAppSkuFamily  Y
-functionAppSkuTier  Dynamic
-location  eastus
-resourceGroupName rg_functiondemo_dev
-storageSku  Standard_LRS
-subscriptionId  xxx-xxx-xxx-xxx
-subscriptionName  Lyles Azure Sandbox
+functionAppSkuTier    Dynamic
+location              eastus
+resourceGroupName     rg_functiondemo_dev
+storageSku            Standard_LRS
+subscriptionId        xxx-xxx-xxx-xxx
+subscriptionName      <mySubscriptionName>

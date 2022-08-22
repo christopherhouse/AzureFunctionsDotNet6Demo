@@ -125,4 +125,6 @@ resource containerResources 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/
 }]
 
 // --------------------------------------------------------------------------------
-output cosmosAccountName string = cosmosAccountName
+output cosmosAccountName string = cosmosAccountResource.name
+output cosmosAccountId string = cosmosAccountResource.id
+output cosmosAccountApiVersion string = cosmosAccountResource.apiVersion
