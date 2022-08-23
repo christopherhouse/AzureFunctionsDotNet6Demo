@@ -4,8 +4,8 @@
 // To deploy this Bicep manually:
 // 	 az login
 //   az account set --subscription <subscriptionId>
-//   az deployment group create -n main-deploy-20220822T082901Z --resource-group rg_functiondemo_dev --template-file 'main.bicep' --parameters orgPrefix=lll appPrefix=fundemo environmentCode=dev keyVaultOwnerUserId1=d4aaf634-e777-4307-bb6e-7bf2305d166e keyVaultOwnerUserId2=209019b5-167b-45cd-ab9c-f987fa262040
-//   az deployment group create -n main-deploy-20220822T082901Z --resource-group rg_functiondemo_qa  --template-file 'main.bicep' --parameters orgPrefix=lll appPrefix=fundemo environmentCode=qa  keyVaultOwnerUserId1=d4aaf634-e777-4307-bb6e-7bf2305d166e keyVaultOwnerUserId2=209019b5-167b-45cd-ab9c-f987fa262040
+//   az deployment group create -n main-deploy-20220823T110000Z --resource-group rg_functiondemo_dev --template-file 'main.bicep' --parameters orgPrefix=lll appPrefix=fundemo environmentCode=dev keyVaultOwnerUserId1=xxxxxxxx-xxxx-xxxx keyVaultOwnerUserId2=xxxxxxxx-xxxx-xxxx
+//   az deployment group create -n main-deploy-20220823T110000Z --resource-group rg_functiondemo_qa  --template-file 'main.bicep' --parameters orgPrefix=lll appPrefix=fundemo environmentCode=qa  keyVaultOwnerUserId1=xxxxxxxx-xxxx-xxxx keyVaultOwnerUserId2=xxxxxxxx-xxxx-xxxx
 // --------------------------------------------------------------------------------
 param environmentCode string = 'dev'
 param location string = resourceGroup().location
@@ -55,6 +55,25 @@ module servicebusModule 'serviceBus.bicep' = {
     runDateTime: runDateTime
   }
 }
+var cosmosContainerArray = [
+  { name: 'products', partitionKey: '/category' }
+  { name: 'orders', partitionKey: '/customerNumber' }
+]
+module cosmosModule 'cosmosDatabase.bicep' = {
+  name: 'cosmos${deploymentSuffix}'
+  params: {
+    containerArray: cosmosContainerArray
+    cosmosDatabaseName: 'FuncDemoDatabase'
+
+    templateFileName: '~cosmosDatabase.bicep'
+    orgPrefix: orgPrefix
+    appPrefix: appPrefix
+    environmentCode: environmentCode
+    appSuffix: appSuffix
+    location: location
+    runDateTime: runDateTime
+  }
+}
 module functionModule 'functionApp.bicep' = {
   name: 'function${deploymentSuffix}'
   dependsOn: [ storageModule ]
@@ -77,34 +96,12 @@ module functionModule 'functionApp.bicep' = {
   }
 }
 
-var cosmosContainerArray = [
-  { name: 'products', partitionKey: '/category' }
-  { name: 'orders', partitionKey: '/customerNumber' }
-]
-module cosmosModule 'cosmosDatabase.bicep' = {
-  name: 'cosmos${deploymentSuffix}'
-  dependsOn: [ storageModule ]
-  params: {
-    containerArray: cosmosContainerArray
-    cosmosDatabaseName: 'FuncDemoDatabase'
 
-    templateFileName: '~cosmosDatabase.bicep'
-    orgPrefix: orgPrefix
-    appPrefix: appPrefix
-    environmentCode: environmentCode
-    appSuffix: appSuffix
-    location: location
-    runDateTime: runDateTime
-  }
-}
-
-var adminId1 = 'af35198e-8dc7-4a2e-a41e-b2ba79bebd51'
-var adminId2 = 'c9be89aa-0783-4310-b73a-f81f4c3f5407'
 module keyVaultModule 'keyVault.bicep' = {
   name: 'keyvault${deploymentSuffix}'
   dependsOn: [ functionModule ]
   params: {
-    adminUserObjectIds: [ adminId1, adminId2 ]
+    adminUserObjectIds: [ keyVaultOwnerUserId1, keyVaultOwnerUserId2 ]
     applicationUserObjectIds: [ functionModule.outputs.functionAppPrincipalId ]
 
     templateFileName: '~keyVault.bicep'
@@ -122,11 +119,12 @@ module keyVaultSecretsModule 'keyVaultSecrets.bicep' = {
   params: {
     keyVaultName: keyVaultModule.outputs.keyVaultName
     functionInsightsKey: functionModule.outputs.functionInsightsKey
-    functionStorageAccountName: functionModule.outputs.functionStorageAccountName
-    serviceBusName: servicebusModule.outputs.serviceBusName
     cosmosAccountName: cosmosModule.outputs.cosmosAccountName
+    serviceBusName: servicebusModule.outputs.serviceBusName
+    functionStorageAccountName: functionModule.outputs.functionStorageAccountName
   }
 }
+
 module functionAppSettingsModule './functionAppSettings.bicep' = {
   name: 'functionAppSettings${deploymentSuffix}'
   dependsOn: [ keyVaultSecretsModule ]
