@@ -143,7 +143,7 @@ module keyVaultSecret3 'br/lllbicepmodules:keyvaultsecretservicebusconnection:20
   dependsOn: [ keyVaultModule, servicebusModule ]
   params: {
     keyVaultName: keyVaultModule.outputs.keyVaultName
-    secretName: 'serviceBusReceiveConnectionString'
+    secretName: 'serviceBusSendConnectionString'
     serviceBusName: servicebusModule.outputs.serviceBusName
     accessKeyName: 'send'
   }
@@ -153,7 +153,7 @@ module keyVaultSecret4 'br/lllbicepmodules:keyvaultsecretservicebusconnection:20
   dependsOn: [ keyVaultModule, servicebusModule ]
   params: {
     keyVaultName: keyVaultModule.outputs.keyVaultName
-    secretName: 'serviceBusSendConnectionString'
+    secretName: 'serviceBusReceiveConnectionString'
     serviceBusName: servicebusModule.outputs.serviceBusName
     accessKeyName: 'listen'
   }
