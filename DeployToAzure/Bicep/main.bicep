@@ -1,4 +1,4 @@
-// --------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------
 // Main file that deploys all Azure Resources for one environment
 // --------------------------------------------------------------------------------
 // NOTE: To make this pipeline work, your service principal may need to be in the
@@ -35,10 +35,6 @@ param runDateTime string = utcNow()
 
 // --------------------------------------------------------------------------------
 var deploymentSuffix = '-${runDateTime}'
-
-// --------------------------------------------------------------------------------
-// TODO: I need a way to create a resource group here
-// --------------------------------------------------------------------------------
 
 module storageModule 'br/lllbicepmodules:storageaccount:2022-08-24.259' = {
   name: 'storage${deploymentSuffix}'
@@ -108,8 +104,6 @@ module functionModule 'br/lllbicepmodules:functionapp:2022-08-24.257' = {
     runDateTime: runDateTime
   }
 }
-
-
 module keyVaultModule 'br/lllbicepmodules:keyvault:2022-08-24.258' = {
   name: 'keyvault${deploymentSuffix}'
   dependsOn: [ functionModule ]
