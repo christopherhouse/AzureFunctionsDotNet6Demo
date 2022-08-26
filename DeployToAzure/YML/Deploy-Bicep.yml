@@ -24,10 +24,9 @@ jobs:
         script: |
           Write-Host 'Running: az login --service-principal -u $(SigningAppRegAppId) -p *** --tenant $(TenantId)'
           az login --service-principal -u $(acrPrincipalId) -p $(acrPrincipalSecret) --tenant $(acrTenantId)
-          Write-Host 'Run: az acr login -n $(acrName) --username $(acrName) --password ***'
+          Write-Host 'Running: az acr login -n $(acrName) --username $(acrName) --password ***'
           az acr login -n $(acrName) --username $(acrName) --password $(acrPassword)
           # az group show --resource-group $(resourceGroupName)
-      continueOnError: true
 
     #- script: az bicep build --file DeployToAzure/Bicep/main.bicep --outfile DeployToAzure/Bicep/main.json
     #  displayName: 'Compile main Bicep file to ARM'

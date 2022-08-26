@@ -1,12 +1,12 @@
-# ------------------------------------------------------------------------------------------------------------------------
+﻿# ------------------------------------------------------------------------------------------------------------------------
 # Pipeline to deploy Azure Resources for All Environments
 # ------------------------------------------------------------------------------------------------------------------------
-# Note 1: This pipeline needs a variable group "FunctionDemo-Infra-<env>" -> for EACH environment -> with these variables:
+# Note: This pipeline needs a variable group "FunctionDemo-Infra-<env>" -> for EACH environment -> with these variables:
 #   orgPrefix:            '<org / your initials>'
 #   appPrefix:            'funcdemo'
 #   environmentCode:      'dev/qa/prod'
 #   resourceGroupName:    'rg_<prefix>_<envCode>'
-#   subscriptionName:     '<ServiceConnectionName / Subscription Name>'
+#   subscriptionName:     '<ServiceConnectionName>'
 #   subscriptionId:       '<subscriptionId>'
 #   location:             'eastus'
 #   appSuffix:            ''
