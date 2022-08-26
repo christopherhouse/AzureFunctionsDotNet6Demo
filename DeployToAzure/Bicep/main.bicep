@@ -129,41 +129,41 @@ module keyVaultSecret1 'br/lllbicepmodules:keyvaultsecret:2022-08-26.309' = {
     secretValue: functionModule.outputs.functionInsightsKey
   }
 }
-module keyVaultSecret2 'br/lllbicepmodules:keyvaultsecretcosmosconnection:2022-08-26.309' = {
+module keyVaultSecret2 'br/lllbicepmodules:keyvaultsecretcosmosconnection:2022-08-26.314' = {
   name: 'keyVaultSecret2${deploymentSuffix}'
   dependsOn: [ keyVaultModule, cosmosModule ]
   params: {
     keyVaultName: keyVaultModule.outputs.keyVaultName
-    secretName: 'cosmosConnectionString'
+    keyName: 'cosmosConnectionString'
     cosmosAccountName: cosmosModule.outputs.cosmosAccountName
   }
 }
-module keyVaultSecret3 'br/lllbicepmodules:keyvaultsecretservicebusconnection:2022-08-26.309' = {
+module keyVaultSecret3 'br/lllbicepmodules:keyvaultsecretservicebusconnection:2022-08-26.314' = {
   name: 'keyVaultSecret3${deploymentSuffix}'
   dependsOn: [ keyVaultModule, servicebusModule ]
   params: {
     keyVaultName: keyVaultModule.outputs.keyVaultName
-    secretName: 'serviceBusSendConnectionString'
+    keyName: 'serviceBusSendConnectionString'
     serviceBusName: servicebusModule.outputs.serviceBusName
     accessKeyName: 'send'
   }
 }
-module keyVaultSecret4 'br/lllbicepmodules:keyvaultsecretservicebusconnection:2022-08-26.309' = {
+module keyVaultSecret4 'br/lllbicepmodules:keyvaultsecretservicebusconnection:2022-08-26.314' = {
   name: 'keyVaultSecret4${deploymentSuffix}'
   dependsOn: [ keyVaultModule, servicebusModule ]
   params: {
     keyVaultName: keyVaultModule.outputs.keyVaultName
-    secretName: 'serviceBusReceiveConnectionString'
+    keyName: 'serviceBusReceiveConnectionString'
     serviceBusName: servicebusModule.outputs.serviceBusName
     accessKeyName: 'listen'
   }
 }
-module keyVaultSecret5 'br/lllbicepmodules:keyvaultsecretstorageconnection:2022-08-26.309' = {
+module keyVaultSecret5 'br/lllbicepmodules:keyvaultsecretstorageconnection:2022-08-26.314' = {
   name: 'keyVaultSecret5${deploymentSuffix}'
   dependsOn: [ keyVaultModule, storageModule ]
   params: {
     keyVaultName: keyVaultModule.outputs.keyVaultName
-    secretName: 'functionStorageAccountConnectionString'
+    keyName: 'functionStorageAccountConnectionString'
     storageAccountName: storageModule.outputs.functionStorageAccountName
   }
 }
