@@ -120,21 +120,57 @@ module keyVaultModule 'br/lllbicepmodules:keyvault:2022-08-24.258' = {
     runDateTime: runDateTime
   }
 }
-module keyVaultSecretsModule 'keyVaultSecrets.bicep' = {
-  name: 'keyvaultSecrets${deploymentSuffix}'
-  dependsOn: [ keyVaultModule ]
+module keyVaultSecret1 'br/lllbicepmodules:keyvaultsecret:2022-08-26.309' = {
+  name: 'keyVaultSecret1${deploymentSuffix}'
+  dependsOn: [ keyVaultModule, functionModule ]
   params: {
     keyVaultName: keyVaultModule.outputs.keyVaultName
-    functionInsightsKey: functionModule.outputs.functionInsightsKey
+    secretName: 'functionAppInsightsKey'
+    secretValue: functionModule.outputs.functionInsightsKey
+  }
+}
+module keyVaultSecret2 'br/lllbicepmodules:keyvaultsecretcosmosconnection:2022-08-26.309' = {
+  name: 'keyVaultSecret2${deploymentSuffix}'
+  dependsOn: [ keyVaultModule, cosmosModule ]
+  params: {
+    keyVaultName: keyVaultModule.outputs.keyVaultName
+    secretName: 'cosmosConnectionString'
     cosmosAccountName: cosmosModule.outputs.cosmosAccountName
+  }
+}
+module keyVaultSecret3 'br/lllbicepmodules:keyvaultsecretservicebusconnection:2022-08-26.309' = {
+  name: 'keyVaultSecret3${deploymentSuffix}'
+  dependsOn: [ keyVaultModule, servicebusModule ]
+  params: {
+    keyVaultName: keyVaultModule.outputs.keyVaultName
+    secretName: 'serviceBusReceiveConnectionString'
     serviceBusName: servicebusModule.outputs.serviceBusName
-    functionStorageAccountName: functionModule.outputs.functionStorageAccountName
+    accessKeyName: 'send'
+  }
+}
+module keyVaultSecret4 'br/lllbicepmodules:keyvaultsecretservicebusconnection:2022-08-26.309' = {
+  name: 'keyVaultSecret4${deploymentSuffix}'
+  dependsOn: [ keyVaultModule, servicebusModule ]
+  params: {
+    keyVaultName: keyVaultModule.outputs.keyVaultName
+    secretName: 'serviceBusSendConnectionString'
+    serviceBusName: servicebusModule.outputs.serviceBusName
+    accessKeyName: 'listen'
+  }
+}
+module keyVaultSecret5 'br/lllbicepmodules:keyvaultsecretstorageconnection:2022-08-26.309' = {
+  name: 'keyVaultSecret5${deploymentSuffix}'
+  dependsOn: [ keyVaultModule, storageModule ]
+  params: {
+    keyVaultName: keyVaultModule.outputs.keyVaultName
+    secretName: 'functionStorageAccountConnectionString'
+    storageAccountName: storageModule.outputs.functionStorageAccountName
   }
 }
 
 module functionAppSettingsModule 'br/lllbicepmodules:functionappsettings:2022-08-24.257' = {
   name: 'functionAppSettings${deploymentSuffix}'
-  dependsOn: [ keyVaultSecretsModule ]
+  dependsOn: [ keyVaultSecret1, keyVaultSecret2, keyVaultSecret3, keyVaultSecret4, keyVaultSecret5, functionModule ]
   params: {
     functionAppName: functionModule.outputs.functionAppName
     functionStorageAccountName: functionModule.outputs.functionStorageAccountName
