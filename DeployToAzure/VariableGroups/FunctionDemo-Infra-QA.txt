@@ -14,7 +14,7 @@ Variables
     keyVaultOwnerUserId1    <guid>
     keyVaultOwnerUserId2    <guid>
     location                eastus
-    orgPrefix               lll
+    orgPrefix               xxx
     resourceGroupName       rg_functiondemo_qa
     storageSku              Standard_LRS
     subscriptionId          <mySubscriptionGuid>

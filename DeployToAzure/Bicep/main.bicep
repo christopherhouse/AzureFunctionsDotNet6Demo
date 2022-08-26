@@ -7,8 +7,8 @@
 // To deploy this Bicep manually:
 // 	 az login
 //   az account set --subscription <subscriptionId>
-//   az deployment group create -n main-deploy-20220823T110000Z --resource-group rg_functiondemo_dev --template-file 'main.bicep' --parameters orgPrefix=lll appPrefix=fundemo environmentCode=dev keyVaultOwnerUserId1=xxxxxxxx-xxxx-xxxx keyVaultOwnerUserId2=xxxxxxxx-xxxx-xxxx
-//   az deployment group create -n main-deploy-20220823T110000Z --resource-group rg_functiondemo_qa  --template-file 'main.bicep' --parameters orgPrefix=lll appPrefix=fundemo environmentCode=qa  keyVaultOwnerUserId1=xxxxxxxx-xxxx-xxxx keyVaultOwnerUserId2=xxxxxxxx-xxxx-xxxx
+//   az deployment group create -n main-deploy-20220823T110000Z --resource-group rg_functiondemo_dev --template-file 'main.bicep' --parameters orgPrefix=xxx appPrefix=fundemo environmentCode=dev keyVaultOwnerUserId1=xxxxxxxx-xxxx-xxxx keyVaultOwnerUserId2=xxxxxxxx-xxxx-xxxx
+//   az deployment group create -n main-deploy-20220823T110000Z --resource-group rg_functiondemo_qa  --template-file 'main.bicep' --parameters orgPrefix=xxx appPrefix=fundemo environmentCode=qa  keyVaultOwnerUserId1=xxxxxxxx-xxxx-xxxx keyVaultOwnerUserId2=xxxxxxxx-xxxx-xxxx
 // --------------------------------------------------------------------------------
 // To list the available bicep container registry image tags:
 //   $registryName = 'lllbicepregistry'
@@ -40,12 +40,12 @@ var deploymentSuffix = '-${runDateTime}'
 // TODO: I need a way to create a resource group here
 // --------------------------------------------------------------------------------
 
-module storageModule 'storageAccount.bicep' = {
+module storageModule 'br/lllbicepmodules:storageaccount:2022-08-24.259' = {
   name: 'storage${deploymentSuffix}'
   params: {
     storageSku: storageSku
 
-    templateFileName: '~storageAccount.bicep'
+    templateFileName: 'storageaccount:2022-08-24.259'
     orgPrefix: orgPrefix
     appPrefix: appPrefix
     environmentCode: environmentCode
@@ -54,12 +54,12 @@ module storageModule 'storageAccount.bicep' = {
     runDateTime: runDateTime
   }
 }
-module servicebusModule 'serviceBus.bicep' = {
+module servicebusModule 'br/lllbicepmodules:servicebus:2022-08-24.259' = {
   name: 'servicebus${deploymentSuffix}'
   params: {
     queueNames: [ 'orders-received', 'orders-to-erp' ]
 
-    templateFileName: '~serviceBus.bicep'
+    templateFileName: 'servicebus:2022-08-24.259'
     orgPrefix: orgPrefix
     appPrefix: appPrefix
     environmentCode: environmentCode
@@ -72,13 +72,13 @@ var cosmosContainerArray = [
   { name: 'products', partitionKey: '/category' }
   { name: 'orders', partitionKey: '/customerNumber' }
 ]
-module cosmosModule 'cosmosDatabase.bicep' = {
+module cosmosModule 'br/lllbicepmodules:cosmosdatabase:2022-08-24.256' = {
   name: 'cosmos${deploymentSuffix}'
   params: {
     containerArray: cosmosContainerArray
     cosmosDatabaseName: 'FuncDemoDatabase'
 
-    templateFileName: '~cosmosDatabase.bicep'
+    templateFileName: 'cosmosdatabase:2022-08-24.256'
     orgPrefix: orgPrefix
     appPrefix: appPrefix
     environmentCode: environmentCode
@@ -87,7 +87,7 @@ module cosmosModule 'cosmosDatabase.bicep' = {
     runDateTime: runDateTime
   }
 }
-module functionModule 'functionApp.bicep' = {
+module functionModule 'br/lllbicepmodules:functionapp:2022-08-24.257' = {
   name: 'function${deploymentSuffix}'
   dependsOn: [ storageModule ]
   params: {
@@ -99,7 +99,7 @@ module functionModule 'functionApp.bicep' = {
     functionStorageAccountName: storageModule.outputs.functionStorageAccountName
     appInsightsLocation: location
 
-    templateFileName: '~functionApp.bicep'
+    templateFileName: 'functionapp:2022-08-24.257'
     orgPrefix: orgPrefix
     appPrefix: appPrefix
     environmentCode: environmentCode
@@ -110,14 +110,14 @@ module functionModule 'functionApp.bicep' = {
 }
 
 
-module keyVaultModule 'keyVault.bicep' = {
+module keyVaultModule 'br/lllbicepmodules:keyvault:2022-08-24.258' = {
   name: 'keyvault${deploymentSuffix}'
   dependsOn: [ functionModule ]
   params: {
     adminUserObjectIds: [ keyVaultOwnerUserId1, keyVaultOwnerUserId2 ]
     applicationUserObjectIds: [ functionModule.outputs.functionAppPrincipalId ]
 
-    templateFileName: '~keyVault.bicep'
+    templateFileName: 'keyvault:2022-08-24.258'
     orgPrefix: orgPrefix
     appPrefix: appPrefix
     environmentCode: environmentCode
@@ -138,7 +138,7 @@ module keyVaultSecretsModule 'keyVaultSecrets.bicep' = {
   }
 }
 
-module functionAppSettingsModule './functionAppSettings.bicep' = {
+module functionAppSettingsModule 'br/lllbicepmodules:functionappsettings:2022-08-24.257' = {
   name: 'functionAppSettings${deploymentSuffix}'
   dependsOn: [ keyVaultSecretsModule ]
   params: {

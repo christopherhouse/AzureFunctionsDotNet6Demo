@@ -3,9 +3,9 @@
 # ------------------------------------------------------------------------------------------------------------------------
 # Create ONE variable group with these variables - a set for each environment :
 #   subscriptionNameDev: '<ServiceConnectionName / Subscription Name>'
-#   functionAppNameDev: 'lll-funcdemo-func-dev'
+#   functionAppNameDev: 'xxx-funcdemo-func-dev'
 #   subscriptionNameQA: '<ServiceConnectionName / Subscription Name>'
-#   functionAppNameQA: 'lll-funcdemo-func-qa'
+#   functionAppNameQA: 'xxx-funcdemo-func-qa'
 # ------------------------------------------------------------------------------------------------------------------------
 name: $(date:yyyy).$(date:MM).$(date:dd)$(rev:.r)
 pool:
