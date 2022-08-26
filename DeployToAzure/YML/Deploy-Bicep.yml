@@ -17,6 +17,16 @@ jobs:
       - group: ${{ parameters.variableGroupName }}
 
     steps:
+    - task: PowerShell@2
+      displayName: 'az and acr login'
+      inputs:
+        targetType: 'inline'
+        script: |
+          az login --service-principal -u $(acrPrincipalId) -p $(acrPrincipalSecret) --tenant $(acrTenantId)
+          # az group show --resource-group $(resourceGroupName)
+          az acr login -n $(acrName) --username $(acrName) --password $(acrPassword)
+      continueOnError: true
+
     #- script: az bicep build --file DeployToAzure/Bicep/main.bicep --outfile DeployToAzure/Bicep/main.json
     #  displayName: 'Compile main Bicep file to ARM'
 

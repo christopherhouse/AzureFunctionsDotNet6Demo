@@ -1,14 +1,21 @@
-orgPrefix             <appPrefix>
-appPrefix             funcdemo
-environmentCode       dev
-appSuffix   
-environmentUpper      DEV
-
-functionAppSku        Y1
-functionAppSkuFamily  Y
-functionAppSkuTier    Dynamic
-location              eastus
-resourceGroupName     rg_functiondemo_dev
-storageSku            Standard_LRS
-subscriptionId        xxx-xxx-xxx-xxx
-subscriptionName      <mySubscriptionName>
+Variables
+    acrName:                xxxbicepregistry
+    acrPassword:            <registry password>
+    acrPrincipalId:         <guid>
+    acrTenantId:            <guid>
+    acrPrincipalSecret:     <client secret>
+    appPrefix               funcdemo
+    appSuffix   
+    environmentCode         dev
+    environmentUpper        DEV
+    functionAppSku          Y1
+    functionAppSkuFamily    Y
+    functionAppSkuTier      Dynamic
+    keyVaultOwnerUserId1    <guid>
+    keyVaultOwnerUserId2    <guid>
+    location                eastus
+    orgPrefix               lll
+    resourceGroupName       rg_functiondemo_dev
+    storageSku              Standard_LRS
+    subscriptionId          <mySubscriptionGuid>
+    subscriptionName        <mySubscriptionName>

@@ -1,11 +1,24 @@
 // --------------------------------------------------------------------------------
 // Main file that deploys all Azure Resources for one environment
 // --------------------------------------------------------------------------------
+// NOTE: To make this pipeline work, your service principal may need to be in the
+//   "acr pull" role for the container registry.
+// --------------------------------------------------------------------------------
 // To deploy this Bicep manually:
 // 	 az login
 //   az account set --subscription <subscriptionId>
 //   az deployment group create -n main-deploy-20220823T110000Z --resource-group rg_functiondemo_dev --template-file 'main.bicep' --parameters orgPrefix=lll appPrefix=fundemo environmentCode=dev keyVaultOwnerUserId1=xxxxxxxx-xxxx-xxxx keyVaultOwnerUserId2=xxxxxxxx-xxxx-xxxx
 //   az deployment group create -n main-deploy-20220823T110000Z --resource-group rg_functiondemo_qa  --template-file 'main.bicep' --parameters orgPrefix=lll appPrefix=fundemo environmentCode=qa  keyVaultOwnerUserId1=xxxxxxxx-xxxx-xxxx keyVaultOwnerUserId2=xxxxxxxx-xxxx-xxxx
+// --------------------------------------------------------------------------------
+// To list the available bicep container registry image tags:
+//   $registryName = 'lllbicepregistry'
+//   Write-Host "Scanning for repository tags in $registryName"
+//   az acr repository list --name $registryName -o tsv | Foreach-Object { 
+//     $thisModule = $_
+//     az acr repository show-tags --name $registryName --repository $_ --output tsv  | Foreach-Object { 
+//       Write-Host "$thisModule`:$_"
+//     }
+//   }
 // --------------------------------------------------------------------------------
 param environmentCode string = 'dev'
 param location string = resourceGroup().location
