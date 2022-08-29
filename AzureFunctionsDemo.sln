@@ -7,8 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AzureFunctionsDemo", "Azure
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AzureDeploy", "AzureDeploy", "{563D9712-F53B-4BC4-BEF8-709075BC5BD8}"
 	ProjectSection(SolutionItems) = preProject
-		DeployToAzure\YML\Deploy-FunctionApp.yml = DeployToAzure\YML\Deploy-FunctionApp.yml
-		DeployToAzure\Bicep\functionApp.bicep = DeployToAzure\Bicep\functionApp.bicep
+		.deployment\YML\Deploy-FunctionApp.yml = .deployment\YML\Deploy-FunctionApp.yml
+		.deployment\Bicep\main.bicep = .deployment\Bicep\main.bicep
 	EndProjectSection
 EndProject
 Global

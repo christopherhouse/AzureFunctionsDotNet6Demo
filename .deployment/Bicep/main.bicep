@@ -35,6 +35,11 @@ param runDateTime string = utcNow()
 
 // --------------------------------------------------------------------------------
 var deploymentSuffix = '-${runDateTime}'
+var cosmosDatabaseName = 'FuncDemoDatabase'
+var cosmosOrdersContainerName = 'orders'
+var cosmosProductsContainerName = 'products'
+var queueOrdersReceived = 'orders-received'
+var queueERP =  'orders-to-erp' 
 
 module storageModule 'br/lllbicepmodules:storageaccount:2022-08-24.259' = {
   name: 'storage${deploymentSuffix}'
@@ -53,7 +58,7 @@ module storageModule 'br/lllbicepmodules:storageaccount:2022-08-24.259' = {
 module servicebusModule 'br/lllbicepmodules:servicebus:2022-08-24.259' = {
   name: 'servicebus${deploymentSuffix}'
   params: {
-    queueNames: [ 'orders-received', 'orders-to-erp' ]
+    queueNames: [ queueOrdersReceived, queueERP ]
 
     templateFileName: 'servicebus:2022-08-24.259'
     orgPrefix: orgPrefix
@@ -65,14 +70,14 @@ module servicebusModule 'br/lllbicepmodules:servicebus:2022-08-24.259' = {
   }
 }
 var cosmosContainerArray = [
-  { name: 'products', partitionKey: '/category' }
-  { name: 'orders', partitionKey: '/customerNumber' }
+  { name: cosmosProductsContainerName, partitionKey: '/category' }
+  { name: cosmosOrdersContainerName, partitionKey: '/customerNumber' }
 ]
 module cosmosModule 'br/lllbicepmodules:cosmosdatabase:2022-08-24.256' = {
   name: 'cosmos${deploymentSuffix}'
   params: {
     containerArray: cosmosContainerArray
-    cosmosDatabaseName: 'FuncDemoDatabase'
+    cosmosDatabaseName: cosmosDatabaseName
 
     templateFileName: 'cosmosdatabase:2022-08-24.256'
     orgPrefix: orgPrefix
@@ -176,6 +181,10 @@ module functionAppSettingsModule 'br/lllbicepmodules:functionappsettings:2022-08
     functionStorageAccountName: functionModule.outputs.functionStorageAccountName
     functionInsightsKey: functionModule.outputs.functionInsightsKey
     customAppSettings: {
+      cosmosDatabaseName: cosmosDatabaseName
+      cosmosContainerName: cosmosProductsContainerName
+      ordersContainerName: cosmosOrdersContainerName
+      orderReceivedQueue: queueOrdersReceived
       cosmosConnectionStringReference: '@Microsoft.KeyVault(VaultName=${keyVaultModule.outputs.keyVaultName};SecretName=cosmosConnectionString)'
       serviceBusReceiveConnectionStringReference: '@Microsoft.KeyVault(VaultName=${keyVaultModule.outputs.keyVaultName};SecretName=serviceBusReceiveConnectionString)'
       serviceBusSendConnectionStringReference: '@Microsoft.KeyVault(VaultName=${keyVaultModule.outputs.keyVaultName};SecretName=serviceBusSendConnectionString)'
