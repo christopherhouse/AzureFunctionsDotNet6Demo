@@ -41,12 +41,13 @@ var cosmosProductsContainerName = 'products'
 var queueOrdersReceived = 'orders-received'
 var queueERP =  'orders-to-erp' 
 
-module storageModule 'br/lllbicepmodules:storageaccount:2022-08-24.259' = {
+//module storageModule 'br/lllbicepmodules:storageaccount:2022-09-04.425' = {
+module storageModule 'storageaccount.bicep' = {
   name: 'storage${deploymentSuffix}'
   params: {
     storageSku: storageSku
 
-    templateFileName: 'storageaccount:2022-08-24.259'
+    templateFileName: 'storageaccount:2022-09-04.425'
     orgPrefix: orgPrefix
     appPrefix: appPrefix
     environmentCode: environmentCode
@@ -55,12 +56,14 @@ module storageModule 'br/lllbicepmodules:storageaccount:2022-08-24.259' = {
     runDateTime: runDateTime
   }
 }
-module servicebusModule 'br/lllbicepmodules:servicebus:2022-08-24.259' = {
+
+//module servicebusModule 'br/lllbicepmodules:servicebus:2022-08-31.335' = {
+module servicebusModule 'servicebus.bicep' = {
   name: 'servicebus${deploymentSuffix}'
   params: {
     queueNames: [ queueOrdersReceived, queueERP ]
 
-    templateFileName: 'servicebus:2022-08-24.259'
+    templateFileName: 'servicebus:2022-08-31.335'
     orgPrefix: orgPrefix
     appPrefix: appPrefix
     environmentCode: environmentCode
@@ -73,13 +76,15 @@ var cosmosContainerArray = [
   { name: cosmosProductsContainerName, partitionKey: '/category' }
   { name: cosmosOrdersContainerName, partitionKey: '/customerNumber' }
 ]
-module cosmosModule 'br/lllbicepmodules:cosmosdatabase:2022-08-24.256' = {
+
+//module cosmosModule 'br/lllbicepmodules:cosmosdatabase:2022-08-31.335' = {
+module cosmosModule 'cosmosdatabase.bicep' = {
   name: 'cosmos${deploymentSuffix}'
   params: {
     containerArray: cosmosContainerArray
     cosmosDatabaseName: cosmosDatabaseName
 
-    templateFileName: 'cosmosdatabase:2022-08-24.256'
+    templateFileName: 'cosmosdatabase:2022-08-31.335'
     orgPrefix: orgPrefix
     appPrefix: appPrefix
     environmentCode: environmentCode
@@ -88,7 +93,8 @@ module cosmosModule 'br/lllbicepmodules:cosmosdatabase:2022-08-24.256' = {
     runDateTime: runDateTime
   }
 }
-module functionModule 'br/lllbicepmodules:functionapp:2022-08-24.257' = {
+//module functionModule 'br/lllbicepmodules:functionapp:2022-09-04.425' = {
+module functionModule 'functionapp.bicep' = {
   name: 'function${deploymentSuffix}'
   dependsOn: [ storageModule ]
   params: {
@@ -100,7 +106,7 @@ module functionModule 'br/lllbicepmodules:functionapp:2022-08-24.257' = {
     functionStorageAccountName: storageModule.outputs.functionStorageAccountName
     appInsightsLocation: location
 
-    templateFileName: 'functionapp:2022-08-24.257'
+    templateFileName: 'functionapp:2022-09-04.425'
     orgPrefix: orgPrefix
     appPrefix: appPrefix
     environmentCode: environmentCode
@@ -109,14 +115,15 @@ module functionModule 'br/lllbicepmodules:functionapp:2022-08-24.257' = {
     runDateTime: runDateTime
   }
 }
-module keyVaultModule 'br/lllbicepmodules:keyvault:2022-08-24.258' = {
+//module keyVaultModule 'br/lllbicepmodules:keyvault:2022-08-31.335' = {
+module keyVaultModule 'keyvault.bicep' = {
   name: 'keyvault${deploymentSuffix}'
   dependsOn: [ functionModule ]
   params: {
     adminUserObjectIds: [ keyVaultOwnerUserId1, keyVaultOwnerUserId2 ]
     applicationUserObjectIds: [ functionModule.outputs.functionAppPrincipalId ]
 
-    templateFileName: 'keyvault:2022-08-24.258'
+    templateFileName: 'keyvault:2022-08-31.335'
     orgPrefix: orgPrefix
     appPrefix: appPrefix
     environmentCode: environmentCode
@@ -125,7 +132,8 @@ module keyVaultModule 'br/lllbicepmodules:keyvault:2022-08-24.258' = {
     runDateTime: runDateTime
   }
 }
-module keyVaultSecret1 'br/lllbicepmodules:keyvaultsecret:2022-08-26.309' = {
+//module keyVaultSecret1 'br/lllbicepmodules:keyvaultsecret:2022-08-26.309' = {
+module keyVaultSecret1 'keyvaultsecret.bicep' = {
   name: 'keyVaultSecret1${deploymentSuffix}'
   dependsOn: [ keyVaultModule, functionModule ]
   params: {
@@ -134,7 +142,8 @@ module keyVaultSecret1 'br/lllbicepmodules:keyvaultsecret:2022-08-26.309' = {
     secretValue: functionModule.outputs.functionInsightsKey
   }
 }
-module keyVaultSecret2 'br/lllbicepmodules:keyvaultsecretcosmosconnection:2022-08-26.314' = {
+//module keyVaultSecret2 'br/lllbicepmodules:keyvaultsecretcosmosconnection:2022-08-26.314' = {
+module keyVaultSecret2 'keyvaultsecretcosmosconnection.bicep' = {
   name: 'keyVaultSecret2${deploymentSuffix}'
   dependsOn: [ keyVaultModule, cosmosModule ]
   params: {
@@ -143,7 +152,8 @@ module keyVaultSecret2 'br/lllbicepmodules:keyvaultsecretcosmosconnection:2022-0
     cosmosAccountName: cosmosModule.outputs.cosmosAccountName
   }
 }
-module keyVaultSecret3 'br/lllbicepmodules:keyvaultsecretservicebusconnection:2022-08-26.314' = {
+//module keyVaultSecret3 'br/lllbicepmodules:keyvaultsecretservicebusconnection:2022-08-26.314' = {
+module keyVaultSecret3 'keyvaultsecretservicebusconnection.bicep' = {
   name: 'keyVaultSecret3${deploymentSuffix}'
   dependsOn: [ keyVaultModule, servicebusModule ]
   params: {
@@ -153,7 +163,8 @@ module keyVaultSecret3 'br/lllbicepmodules:keyvaultsecretservicebusconnection:20
     accessKeyName: 'send'
   }
 }
-module keyVaultSecret4 'br/lllbicepmodules:keyvaultsecretservicebusconnection:2022-08-26.314' = {
+//module keyVaultSecret4 'br/lllbicepmodules:keyvaultsecretservicebusconnection:2022-08-26.314' = {
+module keyVaultSecret4 'keyvaultsecretservicebusconnection.bicep' = {
   name: 'keyVaultSecret4${deploymentSuffix}'
   dependsOn: [ keyVaultModule, servicebusModule ]
   params: {
@@ -163,7 +174,8 @@ module keyVaultSecret4 'br/lllbicepmodules:keyvaultsecretservicebusconnection:20
     accessKeyName: 'listen'
   }
 }
-module keyVaultSecret5 'br/lllbicepmodules:keyvaultsecretstorageconnection:2022-08-26.314' = {
+//module keyVaultSecret5 'br/lllbicepmodules:keyvaultsecretstorageconnection:2022-08-26.314' = {
+module keyVaultSecret5 'keyvaultsecretstorageconnection.bicep' = {
   name: 'keyVaultSecret5${deploymentSuffix}'
   dependsOn: [ keyVaultModule, storageModule ]
   params: {
@@ -172,8 +184,8 @@ module keyVaultSecret5 'br/lllbicepmodules:keyvaultsecretstorageconnection:2022-
     storageAccountName: storageModule.outputs.functionStorageAccountName
   }
 }
-
-module functionAppSettingsModule 'br/lllbicepmodules:functionappsettings:2022-08-24.257' = {
+//module functionAppSettingsModule 'br/lllbicepmodules:functionappsettings:2022-08-24.257' = {
+module functionAppSettingsModule 'functionappsettings.bicep' = {
   name: 'functionAppSettings${deploymentSuffix}'
   dependsOn: [ keyVaultSecret1, keyVaultSecret2, keyVaultSecret3, keyVaultSecret4, keyVaultSecret5, functionModule ]
   params: {

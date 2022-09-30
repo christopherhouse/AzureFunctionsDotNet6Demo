@@ -1,0 +1,50 @@
+# ------------------------------------------------------------------------------------------------------------------------
+# Pipeline to build and deploy Application Only
+# See readme file for info about variable group "FunctionDemo"
+# ------------------------------------------------------------------------------------------------------------------------
+name: $(date:yyyy).$(date:MM).$(date:dd)$(rev:.r)
+
+#trigger: none # fire this manually for now
+trigger:
+  branches:
+    include: 
+      - main
+  paths:
+    exclude: 
+      - '**/*.yml'
+      - '**/*.yaml'
+      - '**/*.bicep'
+
+pool:
+  vmImage: 'windows-latest'
+
+# ------------------------------------------------------------------------------------------------------------------------
+stages:
+- stage: BuildApplication
+  displayName: Build Application
+  jobs:
+  - template: templates/build-function-template.yml
+    parameters:
+      variableGroupName: 'FunctionDemo'
+      environmentName: 'DEV'
+
+# ------------------------------------------------------------------------------------------------------------------------
+- stage: DeployAppDEV
+  displayName: DEV Application
+  dependsOn: BuildApplication
+  condition: succeeded('BuildApplication')
+  jobs:
+  - template: templates/deploy-function-template.yml
+    parameters:
+      variableGroupName: 'FunctionDemo'
+      environmentName: 'DEV'
+
+- stage: DeployAppQA
+  displayName: QA Application
+  dependsOn: DeployAppDEV
+  condition: succeeded('DeployAppDEV')
+  jobs:
+  - template: templates/deploy-function-template.yml
+    parameters:
+      variableGroupName: 'FunctionDemo'
+      environmentName: 'QA'

@@ -1,0 +1,111 @@
+﻿# ----------------------------------------------------------------------------------------------------
+# Template to deploy Azure Resources for one environment
+# ----------------------------------------------------------------------------------------------------
+parameters:
+  variableGroupName: 'myVariableGroup'
+  environmentName: 'DEV'
+
+# ----------------------------------------------------------------------------------------------------
+jobs:
+- deployment: CreateInfra
+  displayName: Initialize Create Infra
+  environment: ${{ parameters.environmentName }}
+
+- job: CreateInfraJob
+  displayName: Create Infrastructure
+  variables:
+    - group: ${{ parameters.variableGroupName }}
+    - name: environmentNameUpper
+      value: ${{ upper(parameters.environmentName) }}
+    - name: environmentNameLower
+      value: ${{ lower(parameters.environmentName) }}
+    - name: bicepDirectory
+      value: '.deployment/Bicep/'
+    - name: bicepFileName
+      value: 'main.bicep'
+
+  steps:
+  - bash: |
+      functionAppName=$(echo "$(orgPrefix)-$(appPrefix)-$(functionName)-$(environmentNameLower)$(appSuffix)" | tr '[:upper:]' '[:lower:]')
+      echo "##vso[task.setvariable variable=functionAppName]$functionAppName"
+
+      resourceGroupName=$(echo "rg_$(appPrefix)_$(environmentNameLower)" | tr '[:upper:]' '[:lower:]' | tr '-' '_')
+      echo "##vso[task.setvariable variable=resourceGroupName]$resourceGroupName"
+      
+      runDateTime=$(echo $(date '+%Y%m%d-%H%M%S'))
+      echo "##vso[task.setvariable variable=runDateTime]$runDateTime"
+    displayName: 'Create Variables'
+    continueOnError: true
+
+  - bash: |
+      echo "subscriptionName=$(subscriptionName)"
+      echo "subscriptionId=$(subscriptionId)"
+      echo "resourceGroupName=$(resourceGroupName)"
+      echo "environmentNameUpper=$(environmentNameUpper)"
+      echo "environmentNameLower=$(environmentNameLower)"
+      echo "location=$(location)"
+      echo "orgPrefix=$(orgPrefix)"
+      echo "appPrefix=$(appPrefix)"
+      echo "appSuffix=$(appSuffix)"
+      echo "storageSku=$(storageSku)"
+      echo "functionAppName=$(functionAppName)"
+      echo "functionAppSku=$(functionAppSku)"
+      echo "functionAppSkuFamily=$(functionAppSkuFamily)"
+      echo "functionAppSkuTier=$(functionAppSkuTier)"
+      echo "keyVaultOwnerUserId1=$(keyVaultOwnerUserId1)"
+      echo "keyVaultOwnerUserId2=$(keyVaultOwnerUserId2)"
+      echo "runDateTime=$(runDateTime)"
+      echo "acrName=$(acrName)"
+      echo "acrPassword=*****"
+      echo "acrPrincipalId=$(acrPrincipalId)"
+      echo "acrTenantId=$(acrTenantId)"
+      echo "acrPrincipalSecret=*****"
+      echo "bicepDirectory=$(bicepDirectory)"
+      echo "bicepFileName=$(bicepFileName)"
+    displayName: 'Display Variables'
+    continueOnError: true
+
+  - task: AzureCLI@2
+    displayName: 'Create Resource Group'
+    inputs:
+      azureSubscription: $(subscriptionName)
+      scriptType: bash
+      scriptLocation: inlineScript
+      inlineScript: az group create --name $(resourceGroupName) --location $(location)
+
+  - task: PowerShell@2
+    displayName: 'az login'
+    inputs:
+      targetType: 'inline'
+      script: |
+        Write-Host 'Running: az login --service-principal -u $(SigningAppRegAppId) -p *** --tenant $(TenantId)'
+        az login --service-principal -u $(acrPrincipalId) -p $(acrPrincipalSecret) --tenant $(acrTenantId)
+
+  #- script: az bicep build --file .deployment/Bicep/main.bicep --outfile .deployment/Bicep/main.json
+  #  displayName: 'Compile main Bicep file to ARM'
+
+  - task: AzureResourceManagerTemplateDeployment@3
+    displayName: 'Deploy ARM Templates'
+    inputs:
+      csmFile: $(bicepDirectory)$(bicepFileName)
+      overrideParameters: >
+        -environmentCode $(environmentNameLower)
+        -location $(location)
+        -orgPrefix $(orgPrefix)
+        -appPrefix $(appPrefix)
+        -appSuffix $(appSuffix)
+        -storageSku $(storageSku)
+        -functionAppSku $(functionAppSku)
+        -functionAppSkuFamily $(functionAppSkuFamily)
+        -functionAppSkuTier $(functionAppSkuTier)
+        -keyVaultOwnerUserId1 $(keyVaultOwnerUserId1)
+        -keyVaultOwnerUserId2 $(keyVaultOwnerUserId2)
+        -runDateTime $(runDateTime)
+      deploymentScope: 'Resource Group'
+      azureResourceManagerConnection: '$(subscriptionName)'
+      subscriptionId: '$(subscriptionId)'
+      action: 'Create Or Update Resource Group'
+      resourceGroupName: '$(resourceGroupName)'
+      location: '$(location)'
+      templateLocation: 'Linked artifact'
+      deploymentMode: 'Incremental'
