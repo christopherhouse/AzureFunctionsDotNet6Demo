@@ -1,5 +1,0 @@
-functionAppNameDev  <appPrefix>-funcdemo-func-dev
-subscriptionNameDev <mySubscriptionName>
-
-functionAppNameQA   <appPrefix>-funcdemo-func-qa
-subscriptionNameQA  <mySubscriptionName>

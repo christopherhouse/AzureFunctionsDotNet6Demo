@@ -1,0 +1,38 @@
+# ------------------------------------------------------------------------------------------------------------------------
+# Pipeline to deploy Azure Resources for All Environments
+# See readme file for info about variable group "DurableDemo"
+# ------------------------------------------------------------------------------------------------------------------------
+name: $(date:yyyy).$(date:MM).$(date:dd)$(rev:.r)
+pool:
+  vmImage: ubuntu-latest
+
+# ------------------------------------------------------------------------------------------------------------------------
+#trigger: none # only fire this manually
+trigger:
+  - none
+  # paths:
+  #   include: 
+  #     - '**/*.yml'
+  #     - '**/*.yaml'
+  #     - '**/*.bicep'
+
+# ----------------------------------------------------------------------------------------------------
+stages:
+- stage: CreateInfrastructureDEV
+  displayName: DEV Infrastructure
+  jobs:
+  - template: templates\deploy-bicep-template.yml
+    parameters:
+      variableGroupName: 'FunctionDemo'
+      environmentName: 'DEV'
+
+# ----------------------------------------------------------------------------------------------------
+- stage: CreateInfrastructureQA
+  displayName: QA Infrastructure
+  dependsOn: CreateInfrastructureDEV
+  condition: succeeded('CreateInfrastructureDEV')
+  jobs:
+  - template: templates\deploy-bicep-template.yml
+    parameters:
+      variableGroupName: 'FunctionDemo'
+      environmentName: 'QA'
