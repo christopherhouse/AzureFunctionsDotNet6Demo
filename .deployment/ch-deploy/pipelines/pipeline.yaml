@@ -1,0 +1,108 @@
+trigger:
+  branches:
+    include:
+    - master
+
+variables:
+  buildConfiguration: 'Release'
+  skipComponentGovernanceDetection: true
+  pool: 'ubuntu-latest'
+  location: 'eastus'
+  resourceGroup: 'COSMOS-DEMO'
+  azure-sub: 'AIRS'
+  cosmosAccountName: 'cmh-cosmos-demo-acct'
+  cosmosDatabaseName: 'cmh-cosmos-demo-db'
+  cosmosContainerName: 'products'
+  cosmosContainerPartitionKey: '/category'
+  ordersContainerName: 'orders'
+  ordersPartitionKey: '/customerNumber'
+  functionAppName: 'cmh-cosmos-demo'
+  infrastructure-arm-template: '$(Pipeline.Workspace)/Infrastructure/cosmosfunctionsdemo.json'
+
+stages:
+- stage: Build
+  displayName: Build stage
+  jobs:
+  - job: BuildInfrastructure
+    displayName: Build Infrastructure
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+    - task: Bash@3
+      displayName: 'Install Bicep tooling'
+      inputs:
+        filePath: '$(System.DefaultWorkingDirectory)/infrastructure/install.sh'
+
+    - task: Bash@3
+      displayName: 'Build ARM template from Bicep'
+      inputs:
+        workingDirectory: '$(System.DefaultWorkingDirectory)/infrastructure/'
+        filePath: '$(System.DefaultWorkingDirectory)/infrastructure/build.sh'
+    - task: CopyFiles@2
+      displayName: 'Copy ARM templates to archive directory'
+      inputs:
+        SourceFolder: '$(System.DefaultWorkingDirectory)/infrastructure'
+        Contents: '**/*.json'
+        TargetFolder: '$(Build.ArtifactStagingDirectory)/infrastructure/'
+
+    - task: PublishBuildArtifacts@1
+      displayName: 'Publish infrastructure artifact'
+      inputs:
+        PathtoPublish: $(Build.ArtifactStagingDirectory)/infrastructure/
+        ArtifactName: 'Infrastructure'
+        publishLocation: Container
+
+    - task: DotNetCoreCLI@2
+      displayName: 'Build'
+      inputs:
+        command: build
+        projects: '**/*.csproj'
+        arguments: '-- configuration Release'
+
+    - task: DotNetCoreCLI@2
+      displayName: 'Publish'
+      inputs:
+        command: publish
+        publishWebProjects: false
+        zipAfterPublish: true
+        projects: '**/*.csproj'
+        arguments: '--configuration Release --output $(Build.ArtifactStagingDirectory)/code/'
+
+    - task: PublishBuildArtifacts@1
+      displayName: 'Publish code artifact'
+      inputs:
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)/code/'
+        ArtifactName: 'Code'
+        publishLocation: Container                        
+
+- stage: 'Deploy'
+  displayName: 'Deploy Stage'
+  variables:
+  - group: 'Cosmos Demo Variables'
+  jobs:
+  - deployment: 'Deploy'
+    environment: 'Development'
+    pool:
+      vmImage: $(pool)
+    strategy:
+     runOnce:
+       deploy:
+        steps:
+          - task: AzureResourceGroupDeployment@2
+            displayName: 'Deploy Infrastructure'
+            inputs:
+               azureSubscription: $(azure-sub)
+               csmFile: $(infrastructure-arm-template)
+               resourceGroupName: $(resourceGroup)
+               location: $(location)
+               overrideParameters: '-functionAppName $(functionAppName) -cosmosAccountName $(cosmosAccountName) -cosmosDatabaseName $(cosmosDatabaseName) -cosmosContainerName $(cosmosContainerName) -cosmosContainerPartitionKey $(cosmosContainerPartitionKey) -ordersContainerName $(ordersContainerName) -ordersPartitionKey $(ordersPartitionKey)'
+               deploymentOutputs: 'armOutput'
+
+          - task: AzureFunctionApp@1
+            displayName: 'Deploy functions'
+            inputs:
+              azureSubscription: 'AIRS'
+              appType: functionAppLinux
+              appName: $(functionAppName)
+              package: $(Pipeline.Workspace)/Code/*.zip
+              appSettings: '-cosmosDatabaseName $(cosmosDatabaseName) -cosmosContainerName $(cosmosContainerName) -cosmosConnectionstring $(cosmosConnectionString)'
