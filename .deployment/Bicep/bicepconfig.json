@@ -1,0 +1,10 @@
+{
+    "moduleAliases": {
+        "br": {
+            "lllbicepmodules": {
+                "registry": "lllbicepregistry.azurecr.io",
+                "modulePath": "bicep"
+            }
+        }
+    }
+}
