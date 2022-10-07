@@ -73,13 +73,13 @@ jobs:
       scriptLocation: inlineScript
       inlineScript: az group create --name $(resourceGroupName) --location $(location) --tags LastDeployed=$(runDateTime) Organization=$(orgPrefix) Application=$(appPrefix) Environment=$(environmentNameUpper)
 
-  - task: PowerShell@2
-    displayName: 'az login'
-    inputs:
-      targetType: 'inline'
-      script: |
-        Write-Host 'Running: az login --service-principal -u $(SigningAppRegAppId) -p *** --tenant $(TenantId)'
-        az login --service-principal -u $(acrPrincipalId) -p $(acrPrincipalSecret) --tenant $(acrTenantId)
+  # - task: PowerShell@2
+  #   displayName: 'az login'
+  #   inputs:
+  #     targetType: 'inline'
+  #     script: |
+  #       Write-Host 'Running: az login --service-principal -u $(SigningAppRegAppId) -p *** --tenant $(TenantId)'
+  #       az login --service-principal -u $(acrPrincipalId) -p $(acrPrincipalSecret) --tenant $(acrTenantId)
 
   #- script: az bicep build --file .deployment/Bicep/main.bicep --outfile .deployment/Bicep/main.json
   #  displayName: 'Compile main Bicep file to ARM'
