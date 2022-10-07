@@ -103,7 +103,7 @@ module functionModule 'functionapp.bicep' = {
     functionAppSku: functionAppSku
     functionAppSkuFamily: functionAppSkuFamily
     functionAppSkuTier: functionAppSkuTier
-    functionStorageAccountName: storageModule.outputs.functionStorageAccountName
+    functionStorageAccountName: storageModule.outputs.storageAccountName
     appInsightsLocation: location
 
     templateFileName: 'functionapp:2022-09-04.425'
@@ -181,7 +181,7 @@ module keyVaultSecret5 'keyvaultsecretstorageconnection.bicep' = {
   params: {
     keyVaultName: keyVaultModule.outputs.keyVaultName
     keyName: 'functionStorageAccountConnectionString'
-    storageAccountName: storageModule.outputs.functionStorageAccountName
+    storageAccountName: storageModule.outputs.storageAccountName
   }
 }
 //module functionAppSettingsModule 'br/lllbicepmodules:functionappsettings:2022-08-24.257' = {
