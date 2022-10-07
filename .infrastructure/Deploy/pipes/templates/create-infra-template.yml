@@ -34,13 +34,7 @@ jobs:
 
   steps:
   - bash: |
-      appPrefixLower=$(echo "$(appPrefix)" | tr '[:upper:]' '[:lower:]')
-      echo "##vso[task.setvariable variable=appPrefixLower]$appPrefixLower"
-      echo "appPrefix=$(appPrefix)"
-      echo "appPrefixLower=$appPrefixLower"
-
-      resourceGroupName=$(echo "rg_$appPrefixLower$(resourceGroupSuffix)" | tr '[:upper:]' '[:lower:]' | tr '-' '_')
-      echo "resourceGroupSuffix=$resourceGroupSuffix"
+      resourceGroupName=$(echo "rg_$(appPrefix)$(resourceGroupSuffix)" | tr '[:upper:]' '[:lower:]' | tr '-' '_')
       echo "resourceGroupName=$resourceGroupName"
       echo "##vso[task.setvariable variable=resourceGroupName]$resourceGroupName"
       
@@ -54,6 +48,7 @@ jobs:
       echo "subscriptionName=$(subscriptionName)"
       echo "subscriptionId=$(subscriptionId)"
       echo "resourceGroupName=$(resourceGroupName)"
+      echo "resourceGroupSuffix=$(resourceGroupSuffix)"
       echo "environmentNameUpper=$(environmentNameUpper)"
       echo "environmentNameLower=$(environmentNameLower)"
       echo "location=$(location)"
