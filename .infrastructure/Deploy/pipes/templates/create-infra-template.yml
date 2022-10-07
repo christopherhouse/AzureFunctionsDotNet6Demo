@@ -2,8 +2,14 @@
 # Template to deploy Azure Resources for one environment
 # ----------------------------------------------------------------------------------------------------
 parameters:
-  variableGroupName: 'myVariableGroup'
-  environmentName: 'DEV'
+- name: variableGroupName
+  default: 'myVariableGroup'
+- name: environmentName
+  default: 'DEV'
+- name: templateFolderName
+  default: '.infrastructure/bicep'
+- name: templateFileName
+  default: 'main.bicep'
 
 # ----------------------------------------------------------------------------------------------------
 jobs:
@@ -19,21 +25,25 @@ jobs:
       value: ${{ upper(parameters.environmentName) }}
     - name: environmentNameLower
       value: ${{ lower(parameters.environmentName) }}
-    - name: bicepDirectory
-      value: '.deployment/Bicep/'
-    - name: bicepFileName
-      value: 'main.bicep'
+    - name: templateFile
+      value: '$(Pipeline.Workspace)/s/${{ parameters.templateFolderName }}/${{ parameters.templateFileName }}'
+    - name: resourceGroupSuffixBase
+      value: '_${{ lower(parameters.environmentName) }}'
+    - name: resourceGroupSuffix
+      value: ${{ replace(variables.resourceGroupSuffixBase, '_prod', '') }}
 
   steps:
   - bash: |
-      functionAppName=$(echo "$(orgPrefix)-$(appPrefix)-$(functionName)-$(environmentNameLower)$(appSuffix)" | tr '[:upper:]' '[:lower:]')
-      echo "##vso[task.setvariable variable=functionAppName]$functionAppName"
+      appPrefixLower=$(echo "$(appPrefix)" | tr '[:upper:]' '[:lower:]')
+      echo "##vso[task.setvariable variable=appPrefixLower]$appPrefixLower"
 
-      resourceGroupName=$(echo "rg_$(appPrefix)_$(environmentNameLower)" | tr '[:upper:]' '[:lower:]' | tr '-' '_')
+      resourceGroupName=$(echo "rg_$(shortAppName)$(resourceGroupSuffix)" | tr '[:upper:]' '[:lower:]' | tr '-' '_')
+      echo "resourceGroupName=$resourceGroupName"
       echo "##vso[task.setvariable variable=resourceGroupName]$resourceGroupName"
       
       runDateTime=$(echo $(date '+%Y%m%d-%H%M%S'))
       echo "##vso[task.setvariable variable=runDateTime]$runDateTime"
+      echo "runDateTime=$runDateTime"
     displayName: 'Create Variables'
     continueOnError: true
 
@@ -48,7 +58,6 @@ jobs:
       echo "appPrefix=$(appPrefix)"
       echo "appSuffix=$(appSuffix)"
       echo "storageSku=$(storageSku)"
-      echo "functionAppName=$(functionAppName)"
       echo "functionAppSku=$(functionAppSku)"
       echo "functionAppSkuFamily=$(functionAppSkuFamily)"
       echo "functionAppSkuTier=$(functionAppSkuTier)"
@@ -87,7 +96,7 @@ jobs:
   - task: AzureResourceManagerTemplateDeployment@3
     displayName: 'Deploy ARM Templates'
     inputs:
-      csmFile: $(bicepDirectory)$(bicepFileName)
+      csmFile: $(templateFile)
       overrideParameters: >
         -environmentCode $(environmentNameLower)
         -location $(location)
