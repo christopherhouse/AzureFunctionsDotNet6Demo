@@ -71,7 +71,7 @@ jobs:
       azureSubscription: $(subscriptionName)
       scriptType: bash
       scriptLocation: inlineScript
-      inlineScript: az group create --name $(resourceGroupName) --location $(location)
+      inlineScript: az group create --name $(resourceGroupName) --location $(location) --tags LastDeployed=$(runDateTime) Organization=$(orgPrefix) Application=$(appPrefix) Environment=$(environmentNameUpper)
 
   - task: PowerShell@2
     displayName: 'az login'
