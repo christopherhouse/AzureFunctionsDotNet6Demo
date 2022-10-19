@@ -1,9 +1,9 @@
 // --------------------------------------------------------------------------------
 // This BICEP file will create KeyVault secret for a service bus connection
 // --------------------------------------------------------------------------------
-param keyVaultName string = ''
-param keyName string = ''
-param serviceBusName string = ''
+param keyVaultName string = 'mykeyvaultname'
+param keyName string = 'mykeyname'
+param serviceBusName string = 'myservicebusname'
 param accessKeyName string = 'RootManageSharedAccessKey'
 param enabledDate string = utcNow()
 param expirationDate string = dateTimeAdd(utcNow(), 'P10Y')

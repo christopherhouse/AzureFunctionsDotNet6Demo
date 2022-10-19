@@ -1,9 +1,9 @@
 // ----------------------------------------------------------------------------------------------------
 // This BICEP file will create an Azure Function
 // ----------------------------------------------------------------------------------------------------
-param functionAppName string = ''
-param functionAppServicePlanName string = ''
-param functionInsightsName string = ''
+param functionAppName string = 'myfunctionname'
+param functionAppServicePlanName string = 'myfunctionappserviceplanname'
+param functionInsightsName string = 'myfunctioninsightsname'
 
 param location string = resourceGroup().location
 param appInsightsLocation string = resourceGroup().location

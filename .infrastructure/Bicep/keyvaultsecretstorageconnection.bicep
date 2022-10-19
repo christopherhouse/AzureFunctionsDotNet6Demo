@@ -1,9 +1,9 @@
 // --------------------------------------------------------------------------------
 // This BICEP file will create KeyVault secret for a storage account connection
 // --------------------------------------------------------------------------------
-param keyVaultName string = ''
-param keyName string = ''
-param storageAccountName string = ''
+param keyVaultName string = 'mykeyvaultname'
+param keyName string = 'mykeyname'
+param storageAccountName string = 'mystorageaccountname'
 param enabledDate string = utcNow()
 param expirationDate string = dateTimeAdd(utcNow(), 'P10Y')
 

@@ -1,8 +1,8 @@
 // --------------------------------------------------------------------------------
 // This BICEP file will create a KeyVault secret
 // --------------------------------------------------------------------------------
-param keyVaultName string = ''
-param secretName string = ''
+param keyVaultName string = 'mykeyvaultname'
+param secretName string = 'mysecretname'
 @secure()
 param secretValue string = ''
 param enabledDate string = utcNow()

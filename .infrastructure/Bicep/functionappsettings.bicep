@@ -1,9 +1,9 @@
 // --------------------------------------------------------------------------------
 // This BICEP file will add unique Configuration settings to a web or function app
 // ----------------------------------------------------------------------------------------------------
-param functionAppName string = ''
-param functionStorageAccountName string = ''
-param functionInsightsKey string = ''
+param functionAppName string = 'myfunctionname'
+param functionStorageAccountName string = 'myfunctionstoragename'
+param functionInsightsKey string = 'myKey'
 param customAppSettings object = {}
 
 resource storageAccountResource 'Microsoft.Storage/storageAccounts@2019-06-01' existing = { name: functionStorageAccountName }

@@ -1,7 +1,7 @@
 // --------------------------------------------------------------------------------
 // This BICEP file will create a Service Bus
 // --------------------------------------------------------------------------------
-param serviceBusName string = ''
+param serviceBusName string = 'myservicebusname'
 param location string = resourceGroup().location
 param commonTags object = {}
 

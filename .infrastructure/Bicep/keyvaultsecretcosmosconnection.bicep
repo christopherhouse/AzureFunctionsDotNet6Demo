@@ -1,9 +1,9 @@
 // --------------------------------------------------------------------------------
 // This BICEP file will create a KeyVault secret for Cosmos
 // --------------------------------------------------------------------------------
-param keyVaultName string = ''
-param keyName string = ''
-param cosmosAccountName string = ''
+param keyVaultName string = 'mykeyvaultname'
+param keyName string = 'mykeyname'
+param cosmosAccountName string = 'mycosmosname'
 param enabledDate string = utcNow()
 param expirationDate string = dateTimeAdd(utcNow(), 'P10Y')
 

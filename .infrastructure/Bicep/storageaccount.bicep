@@ -1,7 +1,7 @@
 ﻿// --------------------------------------------------------------------------------
 // This BICEP file will create storage account
 // --------------------------------------------------------------------------------
-param storageAccountName string = ''
+param storageAccountName string = 'mystorageaccountname'
 param location string = resourceGroup().location
 param commonTags object = {}
 

@@ -6,7 +6,7 @@
 //     { name: 'orders',   partitionKey: '/customerNumber' } 
 //   ]
 // --------------------------------------------------------------------------------
-param cosmosAccountName string = ''
+param cosmosAccountName string = 'myCosmosAccountName'
 param location string = resourceGroup().location
 param commonTags object = {}
 

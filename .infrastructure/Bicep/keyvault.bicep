@@ -4,7 +4,7 @@
 // --------------------------------------------------------------------------------
 // Remaining Cloud Defender Issue: Medium - Private endpoint should be configured for Key Vault
 // --------------------------------------------------------------------------------
-param keyVaultName string = ''
+param keyVaultName string = 'mykeyvaultname'
 param location string = resourceGroup().location
 param commonTags object = {}
 
