@@ -18,9 +18,9 @@ stages:
   displayName: Scan Application
   jobs:
   - template: templates/secure-devops-template.yml
-    condition: runSecurityDevOpScan
     parameters:
       environmentName: 'DEV'
+      runSecurityDevOpScan: runSecurityDevOpScan
 
 - ${{ each environmentName in parameters.environments }} :
   - stage: CreateInfrastructure${{ environmentName }}

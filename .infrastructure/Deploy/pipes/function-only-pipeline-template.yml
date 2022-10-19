@@ -18,9 +18,9 @@ stages:
   displayName: Build Application
   jobs:
   - template: templates/secure-devops-template.yml
-    condition: runSecurityDevOpScan
     parameters:
       environmentName: 'DEV'
+      runSecurityDevOpScan: runSecurityDevOpScan
 
   - template: templates/build-function-template.yml
     parameters:
