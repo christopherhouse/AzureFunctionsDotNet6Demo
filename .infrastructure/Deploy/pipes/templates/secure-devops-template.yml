@@ -11,7 +11,6 @@ parameters:
   default: false
 
 # ----------------------------------------------------------------------------------------------------
-# ----------------------------------------------------------------------------------------------------
 jobs:
 - deployment: SecurityScanDeployment
   displayName: Initialize Security Scan Deploy
@@ -21,8 +20,10 @@ jobs:
   displayName: Security Scan Job
   
   variables:
+    - name: runSecurityDevOpScan
+      value: ${{ parameters.runSecurityDevOpScan }}
     - name: runScan
-      value: $[eq(parameters['runSecurityDevOpScan'], true)]
+      value: $[eq(variables.runSecurityDevOpScan, true)]
 
   steps:
   - bash: |
