@@ -14,9 +14,9 @@ stages:
 - stage: BuildApplication
   displayName: Build Application
   jobs:
-  - template: templates/secure-devops-template.yml
-    parameters:
-      environmentName: 'DEV'
+  # - template: templates/secure-devops-template.yml
+  #   parameters:
+  #     environmentName: 'DEV'
 
   - template: templates/build-function-template.yml
     parameters:

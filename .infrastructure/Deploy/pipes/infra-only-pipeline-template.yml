@@ -11,12 +11,12 @@ parameters:
 
 # ----------------------------------------------------------------------------------------------------
 stages:
-- stage: ScanApplication
-  displayName: Scan Application
-  jobs:
-  - template: templates/secure-devops-template.yml
-    parameters:
-      environmentName: 'DEV'
+# - stage: ScanApplication
+#   displayName: Scan Application
+#   jobs:
+#   - template: templates/secure-devops-template.yml
+#     parameters:
+#       environmentName: 'DEV'
 
 - ${{ each environmentName in parameters.environments }} :
   - stage: CreateInfrastructure${{ environmentName }}
