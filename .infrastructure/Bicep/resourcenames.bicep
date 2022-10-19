@@ -22,6 +22,6 @@ output cosmosAccountName string = '${sanitizedOrgPrefix}-${sanitizedAppPrefix}-c
 output serviceBusName string =    '${sanitizedOrgPrefix}-${sanitizedAppPrefix}-svcbus-${sanitizedEnvironment}${sanitizedAppSuffix}'
 
 // Key Vaults and Storage Accounts can only be 24 characters long
-output keyVaultName string        = take(toLower('${sanitizedOrgPrefix}${sanitizedAppPrefix}vault${sanitizedEnvironment}${appSuffix}'), 24)
+output keyVaultName string =        take(toLower('${sanitizedOrgPrefix}${sanitizedAppPrefix}vault${sanitizedEnvironment}${sanitizedAppSuffix}'), 24)
 output functionStorageName string = take(toLower('${sanitizedOrgPrefix}${sanitizedAppPrefix}${sanitizedEnvironment}${appSuffix}${functionStorageNameSuffix}'), 24)
-output dataStorageName string     = take(toLower('${sanitizedOrgPrefix}${sanitizedAppPrefix}${sanitizedEnvironment}${appSuffix}${dataStorageNameSuffix}'), 24)
+output dataStorageName string =     take(toLower('${sanitizedOrgPrefix}${sanitizedAppPrefix}${sanitizedEnvironment}${appSuffix}${dataStorageNameSuffix}'), 24)

@@ -96,15 +96,15 @@ module functionModule 'functionapp.bicep' = {
     functionAppServicePlanName: resourceNames.outputs.functionAppServicePlanName
     functionInsightsName: resourceNames.outputs.functionInsightsName
 
+    appInsightsLocation: location
+    location: location
+    commonTags: commonTags
+
     functionKind: 'functionapp,linux'
     functionAppSku: functionAppSku
     functionAppSkuFamily: functionAppSkuFamily
     functionAppSkuTier: functionAppSkuTier
     functionStorageAccountName: functionStorageModule.outputs.name
-
-    appInsightsLocation: location
-    location: location
-    commonTags: commonTags
   }
 }
 module keyVaultModule 'keyvault.bicep' = {
