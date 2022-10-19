@@ -4,6 +4,8 @@
 param keyVaultName string = ''
 param keyName string = ''
 param cosmosAccountName string = ''
+param enabledDate string = utcNow()
+param expirationDate string = dateTimeAdd(utcNow(), 'P10Y')
 
 // --------------------------------------------------------------------------------
 resource cosmosResource 'Microsoft.DocumentDB/databaseAccounts@2022-02-15-preview' existing = { name: cosmosAccountName }
@@ -17,6 +19,10 @@ resource keyvaultResource 'Microsoft.KeyVault/vaults@2021-11-01-preview' existin
     name: keyName
     properties: {
       value: cosmosConnectionString
+      attributes: {
+        exp: dateTimeToEpoch(expirationDate)
+        nbf: dateTimeToEpoch(enabledDate)
+      }
     }
   }
 }

@@ -1,3 +1,6 @@
+// --------------------------------------------------------------------------------
+// This BICEP file will create a KeyVault secret
+// --------------------------------------------------------------------------------
 param keyVaultName string = ''
 param secretName string = ''
 @secure()
@@ -6,10 +9,12 @@ param enabledDate string = utcNow()
 param expirationDate string = dateTimeAdd(utcNow(), 'P10Y')
 param enabled bool = true
 
+// --------------------------------------------------------------------------------
 resource vault 'Microsoft.KeyVault/vaults@2022-07-01' existing = {
   name: keyVaultName
 }
 
+// --------------------------------------------------------------------------------
 resource secret 'Microsoft.KeyVault/vaults/secrets@2022-07-01' = {
   name: secretName
   parent: vault

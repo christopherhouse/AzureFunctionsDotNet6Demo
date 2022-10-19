@@ -4,6 +4,8 @@
 param keyVaultName string = ''
 param keyName string = ''
 param storageAccountName string = ''
+param enabledDate string = utcNow()
+param expirationDate string = dateTimeAdd(utcNow(), 'P10Y')
 
 // --------------------------------------------------------------------------------
 resource storageAccountResource 'Microsoft.Storage/storageAccounts@2021-04-01' existing = { name: storageAccountName }
@@ -16,6 +18,10 @@ resource keyvaultResource 'Microsoft.KeyVault/vaults@2021-11-01-preview' existin
     name: keyName
     properties: {
       value: storageAccountConnectionString
+      attributes: {
+        exp: dateTimeToEpoch(expirationDate)
+        nbf: dateTimeToEpoch(enabledDate)
+      }
     }
   }
 }

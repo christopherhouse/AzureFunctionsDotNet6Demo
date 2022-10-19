@@ -5,6 +5,8 @@ param keyVaultName string = ''
 param keyName string = ''
 param serviceBusName string = ''
 param accessKeyName string = 'RootManageSharedAccessKey'
+param enabledDate string = utcNow()
+param expirationDate string = dateTimeAdd(utcNow(), 'P10Y')
 
 // --------------------------------------------------------------------------------
 resource serviceBusResource 'Microsoft.ServiceBus/namespaces@2021-11-01' existing = { name: serviceBusName }
@@ -18,6 +20,10 @@ resource keyvaultResource 'Microsoft.KeyVault/vaults@2021-11-01-preview' existin
     name: keyName
     properties: {
       value: serviceBusConnectionString
+      attributes: {
+        exp: dateTimeToEpoch(expirationDate)
+        nbf: dateTimeToEpoch(enabledDate)
+      }
     }
   }
 }

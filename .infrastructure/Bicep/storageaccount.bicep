@@ -1,36 +1,25 @@
 ﻿// --------------------------------------------------------------------------------
 // This BICEP file will create storage account
 // --------------------------------------------------------------------------------
-param orgPrefix string = 'org'
-param appPrefix string = 'app'
-@allowed(['dev','demo','qa','stg','prod'])
-param environmentCode string = 'dev'
-param appSuffix string = '1'
+param storageAccountName string = ''
 param location string = resourceGroup().location
-param runDateTime string = utcNow()
-param templateFileName string = '~storageAccount.bicep'
-param storageNameSuffix string = 'store'
+param commonTags object = {}
 
 @allowed([ 'Standard_LRS', 'Standard_GRS', 'Standard_RAGRS' ])
 param storageSku string = 'Standard_LRS'
 
 // --------------------------------------------------------------------------------
-var functionStorageName = toLower('${orgPrefix}${appPrefix}${environmentCode}${appSuffix}${storageNameSuffix}')
+var templateTag = { TemplateFile: '~storageAccount.bicep' }
+var tags = union(commonTags, templateTag)
 
 // --------------------------------------------------------------------------------
 resource storageAccountResource 'Microsoft.Storage/storageAccounts@2019-06-01' = {
-    name: functionStorageName
+    name: storageAccountName
     location: location
     sku: {
         name: storageSku
     }
-    tags: {
-        LastDeployed: runDateTime
-        TemplateFile: templateFileName
-        Organization: orgPrefix
-        Application: appPrefix
-        Environment: environmentCode
-    }
+    tags: tags
     kind: 'Storage'
     properties: {
         networkAcls: {
@@ -72,4 +61,5 @@ resource blobServiceResource 'Microsoft.Storage/storageAccounts/blobServices@201
     }
 }
 
-output storageAccountName string = storageAccountResource.name
+output id string = storageAccountResource.id
+output name string = storageAccountResource.name
