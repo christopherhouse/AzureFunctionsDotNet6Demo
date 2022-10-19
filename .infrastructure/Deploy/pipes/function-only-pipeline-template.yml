@@ -20,7 +20,7 @@ stages:
   - template: templates/secure-devops-template.yml
     parameters:
       environmentName: 'DEV'
-      runSecurityDevOpScan: runSecurityDevOpScan
+      runSecurityDevOpScan: ${{ parameters.runSecurityDevOpScan }}
 
   - template: templates/build-function-template.yml
     parameters:
