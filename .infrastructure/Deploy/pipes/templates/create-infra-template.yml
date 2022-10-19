@@ -25,12 +25,14 @@ jobs:
       value: ${{ upper(parameters.environmentName) }}
     - name: environmentNameLower
       value: ${{ lower(parameters.environmentName) }}
-    - name: templateFile
-      value: '$(Pipeline.Workspace)/s/${{ parameters.templateFolderName }}/${{ parameters.templateFileName }}'
     - name: resourceGroupSuffixBase
       value: '_${{ lower(parameters.environmentName) }}'
     - name: resourceGroupSuffix
       value: ${{ replace(variables.resourceGroupSuffixBase, '_prod', '') }}
+    - name: templateFile
+      value: '$(Pipeline.Workspace)/s/${{ parameters.templateFolderName }}/${{ parameters.templateFileName }}'
+    - name: compiledJsonFile
+      value: '${{ parameters.templateFolderName }}/compiled.json'
 
   steps:
   - bash: |
@@ -41,6 +43,10 @@ jobs:
       runDateTime=$(echo $(date '+%Y%m%d-%H%M%S'))
       echo "##vso[task.setvariable variable=runDateTime]$runDateTime"
       echo "runDateTime=$runDateTime"
+                                   
+      runDateTimeZ=$(echo $(date '+%Y%m%dT%H%M%SZ'))
+      echo "##vso[task.setvariable variable=runDateTimeZ]$runDateTimeZ"
+      echo "runDateTimeZ=$runDateTimeZ"
     displayName: 'Create Variables'
     continueOnError: true
 
@@ -62,9 +68,22 @@ jobs:
       echo "keyVaultOwnerUserId1=$(keyVaultOwnerUserId1)"
       echo "keyVaultOwnerUserId2=$(keyVaultOwnerUserId2)"
       echo "runDateTime=$(runDateTime)"
+      echo "runDateTimeZ=$(runDateTimeZ)"
       echo "templateFile=$(templateFile)"
+      echo "compiledJsonFile=$(compiledJsonFile)"
+      echo "Resource Group Command:"
+      echo "  az group create --name $(resourceGroupName) --location $(location) --tags LastDeployed=$(runDateTime) Organization=$(orgPrefix) Application=$(appPrefix) Environment=$(environmentNameUpper)"
+      echo "Bicep Deploy Sample Command:"
+      echo "  az deployment group create -n main-deploy-$(runDateTimeZ) --resource-group $(resourceGroupName) --template-file 'main.bicep' --parameters environmentCode $(environmentNameLower) location $(location) orgPrefix $(orgPrefix) appPrefix $(appPrefix) appSuffix $(appSuffix) storageSku $(storageSku) functionAppSku $(functionAppSku) functionAppSkuFamily $(functionAppSkuFamily) functionAppSkuTier $(functionAppSkuTier) keyVaultOwnerUserId1 $(keyVaultOwnerUserId1) keyVaultOwnerUserId2 $(keyVaultOwnerUserId2) runDateTime $(runDateTime)"
     displayName: 'Display Variables'
     continueOnError: true
+
+  # Login is needed if you are pulling Bicep files from an Azure Container Registry
+  # -script: az login --service-principal -u $(principalId) -p $(clientSecret) --tenant $(tenantId)
+  #   displayName: 'az login'
+
+  # - script: az bicep build --file $(bicepDirectory)$(bicepFileName) --outfile $(compiledJsonFile)
+  #   displayName: 'Compile Bicep file'
 
   - task: AzureCLI@2
     displayName: 'Create Resource Group'
@@ -74,19 +93,8 @@ jobs:
       scriptLocation: inlineScript
       inlineScript: az group create --name $(resourceGroupName) --location $(location) --tags LastDeployed=$(runDateTime) Organization=$(orgPrefix) Application=$(appPrefix) Environment=$(environmentNameUpper)
 
-  # - task: PowerShell@2
-  #   displayName: 'az login'
-  #   inputs:
-  #     targetType: 'inline'
-  #     script: |
-  #       Write-Host 'Running: az login --service-principal -u $(SigningAppRegAppId) -p *** --tenant $(TenantId)'
-  #       az login --service-principal -u $(acrPrincipalId) -p $(acrPrincipalSecret) --tenant $(acrTenantId)
-
-  #- script: az bicep build --file .deployment/Bicep/main.bicep --outfile .deployment/Bicep/main.json
-  #  displayName: 'Compile main Bicep file to ARM'
-
   - task: AzureResourceManagerTemplateDeployment@3
-    displayName: 'Deploy ARM Templates'
+    displayName: 'Publish Bicep Resources'
     inputs:
       csmFile: $(templateFile)
       overrideParameters: >
