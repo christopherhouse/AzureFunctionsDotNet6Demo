@@ -27,4 +27,3 @@ stages:
   parameters:
     variableGroupName: 'FunctionDemo'
     environments: ['DEMO']  # ['DEV','PROD'] ['DEV','QA'] or ['DEV','QA','PROD']
-    runSecurityDevOpScan: false  # throws lots of warnings from PSRule that I don't care about

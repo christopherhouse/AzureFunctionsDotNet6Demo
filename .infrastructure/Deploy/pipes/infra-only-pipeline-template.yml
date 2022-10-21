@@ -8,9 +8,6 @@ parameters:
   default: ['DEV']
 - name: variableGroupName
   default: 'myVariableGroupName'
-- name: runSecurityDevOpScan
-  type: boolean
-  default: false
 
 # ----------------------------------------------------------------------------------------------------
 stages:
@@ -19,8 +16,8 @@ stages:
   jobs:
   - template: templates/secure-devops-template.yml
     parameters:
+      variableGroupName: ${{ parameters.variableGroupName }}
       environmentName: 'DEV'
-      runSecurityDevOpScan: ${{ parameters.runSecurityDevOpScan }}
 
 - ${{ each environmentName in parameters.environments }} :
   - stage: CreateInfrastructure${{ environmentName }}

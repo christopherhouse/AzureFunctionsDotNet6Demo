@@ -27,6 +27,7 @@ To create these variable groups, customize and run this command in the Azure Clo
          keyVaultOwnerUserId2='owner1SID'
          location='eastus' 
          orgPrefix='<yourInitials>' 
+         runSecurityDevOpScan='true'
          storageSku='Standard_LRS'
          serviceConnectionName='<yourServiceConnectionName>' 
          subscriptionId='<yourSubscriptionId>' 

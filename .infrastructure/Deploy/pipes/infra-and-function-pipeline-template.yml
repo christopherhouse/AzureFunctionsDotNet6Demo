@@ -19,8 +19,8 @@ stages:
   jobs:
   - template: templates/secure-devops-template.yml
     parameters:
+      variableGroupName: ${{ parameters.variableGroupName }}
       environmentName: 'DEV'
-      runSecurityDevOpScan: ${{ parameters.runSecurityDevOpScan }}
 
   - template: templates/build-function-template.yml
     parameters:
