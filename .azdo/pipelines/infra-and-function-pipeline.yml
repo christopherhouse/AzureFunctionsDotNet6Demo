@@ -16,11 +16,11 @@ trigger:
   # branches:
   #   include:
   #     - main
-  #   exclude:
-  #     - '**/*.md'
   # paths:
   #   include:
-  #    - 'Functions.Demo/*'
+  #    - 'src/Functions.Demo/*'
+  #   exclude:
+  #     - '**/*.md'
 
 # ----------------------------------------------------------------------------------------------------
 stages:

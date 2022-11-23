@@ -24,7 +24,7 @@ jobs:
     name: Build Artifacts
     uses: ./.github/workflows/template-function-app-build.yml
     with:
-      envCode: 'gha'
+      envCode: 'dev'
       rootDirectory: 'src/AzureFunctionsDemo'
     secrets: inherit
 

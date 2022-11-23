@@ -8,6 +8,8 @@
 
 [![deploy.infra.and.function](https://github.com/lluppesms/functions.demo/actions/workflows/deploy-infra-function.yml/badge.svg)](https://github.com/lluppesms/functions.demo/actions/workflows/deploy-infra-function.yml)
 
+---
+
 ## About
 
 This project provides a number of Azure Functions, to illustrate the capabilities found in the Cosmos DB bindings for Azure Functions.  Documentation around these capabilities and supported scenarios can be [found here](https://docs.microsoft.com/en-us/azure/azure-functions/functions-bindings-cosmosdb-v2).
