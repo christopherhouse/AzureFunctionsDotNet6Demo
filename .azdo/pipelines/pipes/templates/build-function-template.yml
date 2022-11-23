@@ -32,7 +32,6 @@ jobs:
       echo "Build.BuildId=$(Build.BuildId)"
       echo "appName=$(appName)"
       echo "projectFileName=$(projectFileName)"
-      tree $(Pipeline.Workspace)
     continueOnError: true
     displayName: 'Display Variables'
 
