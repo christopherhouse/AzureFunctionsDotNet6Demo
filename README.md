@@ -2,7 +2,7 @@
 
 [![Open in vscode.dev](https://img.shields.io/badge/Open%20in-vscode.dev-blue)][1]
 
-[1]: https://vscode.dev/github/lluppesms/durable.function.azd/
+[1]: https://vscode.dev/github/lluppesms/functions.demo/
 
 ![azd Compatible](/Docs/images/AZD_Compatible.png)
 
