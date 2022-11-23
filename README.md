@@ -6,9 +6,7 @@
 
 ![azd Compatible](/Docs/images/AZD_Compatible.png)
 
-[![deploy.infra](https://github.com/lluppesms/functions.demo/actions/workflows/deploy-infra.yml/badge.svg)](https://github.com/lluppesms/functions.demo/actions/workflows/deploy-infra.yml)
-
-[![deploy.app](https://github.com/lluppesms/functions.demo/actions/workflows/deploy-function.yml/badge.svg)](https://github.com/lluppesms/functions.demo/actions/workflows/deploy-function.yml)
+[![deploy.infra.and.function](https://github.com/lluppesms/functions.demo/actions/workflows/deploy-infra-function.yml/badge.svg)](https://github.com/lluppesms/functions.demo/actions/workflows/deploy-infra-function.yml)
 
 ## About
 
