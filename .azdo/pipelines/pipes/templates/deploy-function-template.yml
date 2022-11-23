@@ -22,14 +22,14 @@ jobs:
 
   steps:
   - bash: |
-      functionAppName=$(echo "$(appName)-$(environmentName)" | tr '[:upper:]' '[:lower:]')
+      functionAppName=$(echo "$(appName)-$(functionName)-$(environmentName)" | tr '[:upper:]' '[:lower:]')
       echo "##vso[task.setvariable variable=functionAppName]$functionAppName"
     displayName: 'Create Variables'
 
   - task: DownloadPipelineArtifact@2
     displayName: 'Download Pipeline Artifacts'
     inputs:
-      artifact: Code
+      artifact: App
 
   - task: CmdLine@2
     inputs:

@@ -7,6 +7,8 @@ parameters:
   default: ['DEV']
 - name: variableGroupName
   default: 'myVariableGroupName'
+- name: projectDirectory
+  default: 'src/myProjectDirectory'
 
 # ----------------------------------------------------------------------------------------------------
 stages:
@@ -22,6 +24,7 @@ stages:
     parameters:
       variableGroupName: ${{ parameters.variableGroupName }}
       environmentName: 'DEV'
+      projectDirectory: ${{ parameters.projectDirectory }}
 
 # ----------------------------------------------------------------------------------------------------
 - ${{ each environmentName in parameters.environments }} :

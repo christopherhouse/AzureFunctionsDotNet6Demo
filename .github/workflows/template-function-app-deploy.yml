@@ -41,5 +41,5 @@ jobs:
     - name: Deploy package to Azure Function
       uses: Azure/functions-action@v1
       with:
-        app-name: ${{ secrets.APP_NAME }}-${{ inputs.envCode }}
+        app-name: ${{ secrets.APP_NAME }}-process-${{ inputs.envCode }}
         package: .

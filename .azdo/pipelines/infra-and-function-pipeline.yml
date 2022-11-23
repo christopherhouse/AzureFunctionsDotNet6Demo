@@ -28,3 +28,4 @@ stages:
   parameters:
     variableGroupName: 'FunctionDemo'
     environments: ['DEMO']  # ['DEV','PROD'] ['DEV','QA'] or ['DEV','QA','PROD']
+    projectDirectory: 'src/AzureFunctionsDemo'
